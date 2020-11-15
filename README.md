@@ -1,2 +1,2 @@
 # Acceleron Luna
-Online satellite portal for managing Acceleron POS
+Online satellite portal for managing Acceleron X POS
