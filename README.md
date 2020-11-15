@@ -1,2 +1,2 @@
-# zaitoonManager
-Online manager portal for Zaitoon Restaurants
+# Acceleron Luna
+Online satellite portal for managing Acceleron POS
