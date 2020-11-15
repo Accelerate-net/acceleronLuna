@@ -9,7 +9,7 @@ angular.module('seaterApp', ['ngCookies'])
   .controller('seaterController', function($scope, $http, $interval, $cookies) {
 
     //Check if logged in
-    if($cookies.get("zaitoonAdmin")){
+    if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
     else{
@@ -19,8 +19,8 @@ angular.module('seaterApp', ['ngCookies'])
 
     //Logout function
     $scope.logoutNow = function(){
-      if($cookies.get("zaitoonAdmin")){
-        $cookies.remove("zaitoonAdmin");
+      if($cookies.get("acceleronLunaAdminToken")){
+        $cookies.remove("acceleronLunaAdminToken");
         window.location = "adminlogin.html";
       }
     }
@@ -142,7 +142,7 @@ $scope.initReservations = function(){
       $scope.activeDinnerCount = 0;         
 
       var data = {};
-      data.token = $cookies.get("zaitoonAdmin");
+      data.token = $cookies.get("acceleronLunaAdminToken");
       data.id = 0;
       data.key = today;
       $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
@@ -208,7 +208,7 @@ $scope.initReservations();
       $scope.search = function() {
 
         var data = {};
-        data.token = $cookies.get("zaitoonAdmin");
+        data.token = $cookies.get("acceleronLunaAdminToken");
         data.key = $scope.searchID;
         data.id = 0;
         $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
@@ -252,7 +252,7 @@ $scope.initReservations();
       $scope.loadMore = function(){
         $scope.limiter = $scope.limiter + 10;
         var data = {};
-        data.token = $cookies.get("zaitoonAdmin");
+        data.token = $cookies.get("acceleronLunaAdminToken");
         data.key = $scope.searchID;
         data.id = $scope.limiter;
 
@@ -373,7 +373,7 @@ $scope.initReservations();
          $scope.confirmCancel = function(code){
 	    	var data = {};
 	    	data.id = code;
-	        data.token = $cookies.get("zaitoonAdmin");
+	        data.token = $cookies.get("acceleronLunaAdminToken");
 	        $http({
 	          method  : 'POST',
 	          url     : 'https://accelerateengine.app/food-engine/apis/cancelreservationsadmin.php',
@@ -406,7 +406,7 @@ $scope.initReservations();
          $scope.confirmComplete = function(code){
 	    	var data = {};
 	    	data.id = code;
-	        data.token = $cookies.get("zaitoonAdmin");
+	        data.token = $cookies.get("acceleronLunaAdminToken");
 	        $http({
 	          method  : 'POST',
 	          url     : 'https://accelerateengine.app/food-engine/apis/deskmarkreservationcompleted.php',
@@ -535,7 +535,7 @@ $scope.initReservations();
 			
 			var data = {};
 		    	data.details = $scope.newReservationContent;
-		        data.token = $cookies.get("zaitoonAdmin");
+		        data.token = $cookies.get("acceleronLunaAdminToken");
 
 console.log(data)
 		        
@@ -591,7 +591,7 @@ console.log(data)
 			
 			var data = {};
 		    	data.details = $scope.editReservationContent;
-		        data.token = $cookies.get("zaitoonAdmin");
+		        data.token = $cookies.get("acceleronLunaAdminToken");
 		        $http({
 		          method  : 'POST',
 		          url     : 'https://accelerateengine.app/food-engine/apis/editreservationsadmin.php',
@@ -667,7 +667,7 @@ console.log(data)
 		$scope.seatPlanError = "";
 	
 	      var data = {};
-	      data.token = $cookies.get("zaitoonAdmin");
+	      data.token = $cookies.get("acceleronLunaAdminToken");
 	      $http({
 	        method  : 'POST',
 	        url     : 'https://accelerateengine.app/food-engine/apis/deskfetchtables.php',
@@ -802,7 +802,7 @@ console.log(data)
       
       $scope.allocateSeats = function(code, list){	      
 	      var data = {};
-	      data.token = $cookies.get("zaitoonAdmin");
+	      data.token = $cookies.get("acceleronLunaAdminToken");
 	      data.id = code;
 	      data.tables = list; //JSON.stringify(list);
 	      $http({
@@ -832,7 +832,7 @@ console.log(data)
       
       $scope.deallocateSeats = function(code, list){	      
 	      var data = {};
-	      data.token = $cookies.get("zaitoonAdmin");
+	      data.token = $cookies.get("acceleronLunaAdminToken");
 	      data.id = code;
 	      data.tables = list;
 	      $http({
@@ -864,7 +864,7 @@ console.log(data)
       $scope.confirmRelease = function(code, reserveID){
 	      
 	      var data = {};
-	      data.token = $cookies.get("zaitoonAdmin");
+	      data.token = $cookies.get("acceleronLunaAdminToken");
 	      data.id = code;
 	      data.bookingID = reserveID;
 	      $http({
@@ -895,7 +895,7 @@ console.log(data)
 
      //Refresh Badge Counts
         var admin_data = {};
-        admin_data.token = $cookies.get("zaitoonAdmin");
+        admin_data.token = $cookies.get("acceleronLunaAdminToken");
         $http({
           method  : 'POST',
           url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',

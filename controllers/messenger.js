@@ -9,7 +9,7 @@ angular.module('messengerApp', ['ngCookies'])
   .controller('messengerController', function($scope, $http, $interval, $cookies) {
 
     //Check if logged in
-    if($cookies.get("zaitoonAdmin")){
+    if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
     else{
@@ -19,8 +19,8 @@ angular.module('messengerApp', ['ngCookies'])
 
     //Logout function
     $scope.logoutNow = function(){
-      if($cookies.get("zaitoonAdmin")){
-        $cookies.remove("zaitoonAdmin");
+      if($cookies.get("acceleronLunaAdminToken")){
+        $cookies.remove("acceleronLunaAdminToken");
         window.location = "adminlogin.html";
       }
     }
@@ -94,7 +94,7 @@ angular.module('messengerApp', ['ngCookies'])
 	      	var co_data = {};
 	      	co_data.type = type;
 	      	co_data.page = pageid - 1;
-	        co_data.token = $cookies.get("zaitoonAdmin");
+	        co_data.token = $cookies.get("acceleronLunaAdminToken");
 	        $http({
 	          method  : 'POST',
 	          url     : 'https://accelerateengine.app/food-engine/apis/fetchmessengerhistory.php',
@@ -235,7 +235,7 @@ angular.module('messengerApp', ['ngCookies'])
 	
 	//Report Generation Confirmation
 	$scope.generateReport = function(code, mytype){
-		var temp_token = encodeURIComponent($cookies.get("zaitoonAdmin"));
+		var temp_token = encodeURIComponent($cookies.get("acceleronLunaAdminToken"));
 		window.open ("https://accelerateengine.app/food-engine/apis/fetchmessengersummary.php?access="+temp_token+"&uid="+code+"&type="+mytype);
 	}
 	
@@ -243,7 +243,7 @@ angular.module('messengerApp', ['ngCookies'])
 		var co_data = {};
 	      	co_data.type = $scope.marketingType;
 	      	co_data.id = req_id;
-	        co_data.token = $cookies.get("zaitoonAdmin");
+	        co_data.token = $cookies.get("acceleronLunaAdminToken");
 
 	        $http({
 	          method  : 'POST',
@@ -366,7 +366,7 @@ angular.module('messengerApp', ['ngCookies'])
 		      		$('#loading').show(); $("body").css("cursor", "progress");
 
 		      		var data = {};
-		        	data.token = $cookies.get("zaitoonAdmin");
+		        	data.token = $cookies.get("acceleronLunaAdminToken");
 		        	data.brief = $scope.addNewContent.brief;
 		        	data.title = $scope.addNewContent.title;
 		        	data.url = $scope.myPhotoURL;      
@@ -402,7 +402,7 @@ angular.module('messengerApp', ['ngCookies'])
 
 		      		
 		      		var data = {};
-		        	data.token = $cookies.get("zaitoonAdmin");
+		        	data.token = $cookies.get("acceleronLunaAdminToken");
 		        	data.content = $scope.addNewContent.brief;
 		        	data.name = $scope.addNewContent.name;
 		        	data.target = document.getElementById("tokenfield-typeahead").value;   
@@ -448,7 +448,7 @@ angular.module('messengerApp', ['ngCookies'])
 		      		$('#loading').show(); $("body").css("cursor", "progress");
 		      		
 		      		var data = {};
-		        	data.token = $cookies.get("zaitoonAdmin");
+		        	data.token = $cookies.get("acceleronLunaAdminToken");
 		        	data.content = $scope.addNewContent.brief;
 		        	data.name = $scope.addNewContent.name;
 		        	data.target = document.getElementById("tokenfield-typeahead").value;   
@@ -494,7 +494,7 @@ angular.module('messengerApp', ['ngCookies'])
 
          //Refresh Badge Counts
         var admin_data = {};
-        admin_data.token = $cookies.get("zaitoonAdmin");
+        admin_data.token = $cookies.get("acceleronLunaAdminToken");
         $http({
           method  : 'POST',
           url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',

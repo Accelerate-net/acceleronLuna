@@ -8,7 +8,7 @@ angular.module('guestApp', ['ngCookies'])
   .controller('guestController', function($scope, $http, $interval, $cookies) {
 
     //Check if logged in
-    if($cookies.get("zaitoonAdmin")){
+    if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
     else{
@@ -18,8 +18,8 @@ angular.module('guestApp', ['ngCookies'])
 
     //Logout function
     $scope.logoutNow = function(){
-      if($cookies.get("zaitoonAdmin")){
-        $cookies.remove("zaitoonAdmin");
+      if($cookies.get("acceleronLunaAdminToken")){
+        $cookies.remove("acceleronLunaAdminToken");
         window.location = "adminlogin.html";
       }
     }
@@ -54,7 +54,7 @@ angular.module('guestApp', ['ngCookies'])
     $scope.fetchVisits = function(userKey){    
 	     
 	      var data = {};
-              data.token = $cookies.get("zaitoonAdmin");
+              data.token = $cookies.get("acceleronLunaAdminToken");
               data.id = $scope.visitlimiter;
               data.mobile = userKey;
 
@@ -96,7 +96,7 @@ angular.module('guestApp', ['ngCookies'])
 
       //Fetch User Details
       var data = {};
-      data.token = $cookies.get("zaitoonAdmin");
+      data.token = $cookies.get("acceleronLunaAdminToken");
       data.key = $scope.searchID;
       data.id = $scope.searchlimiter;
 
@@ -156,7 +156,7 @@ angular.module('guestApp', ['ngCookies'])
 
     $scope.manageUserBlock = function(userid, status) {
       var data = {};
-      data.token = $cookies.get("zaitoonAdmin");
+      data.token = $cookies.get("acceleronLunaAdminToken");
       data.status = status;
       data.user = userid;
 
@@ -189,7 +189,7 @@ angular.module('guestApp', ['ngCookies'])
       $scope.searchlimiter = $scope.searchlimiter + 5;
       
       var data = {};
-      data.token = $cookies.get("zaitoonAdmin");
+      data.token = $cookies.get("acceleronLunaAdminToken");
       data.id = $scope.searchlimiter;
       data.key = $scope.searchID;
 
@@ -223,7 +223,7 @@ angular.module('guestApp', ['ngCookies'])
       	      $scope.visitlimiter = $scope.visitlimiter + 5;
       
 	      var data = {};
-              data.token = $cookies.get("zaitoonAdmin");
+              data.token = $cookies.get("acceleronLunaAdminToken");
               data.id = $scope.visitlimiter;
               data.mobile = userKey;
 
@@ -255,7 +255,7 @@ angular.module('guestApp', ['ngCookies'])
 
      //Refresh Badge Counts
         var admin_data = {};
-        admin_data.token = $cookies.get("zaitoonAdmin");
+        admin_data.token = $cookies.get("acceleronLunaAdminToken");
         $http({
           method  : 'POST',
           url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',

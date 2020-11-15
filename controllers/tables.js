@@ -9,7 +9,7 @@ angular.module('tablesApp', ['ngCookies'])
   .controller('tablesController', function($scope, $http, $interval, $cookies) {
 
     //Check if logged in
-    if($cookies.get("zaitoonAdmin")){
+    if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
     else{
@@ -19,8 +19,8 @@ angular.module('tablesApp', ['ngCookies'])
 
     //Logout function
     $scope.logoutNow = function(){
-      if($cookies.get("zaitoonAdmin")){
-        $cookies.remove("zaitoonAdmin");
+      if($cookies.get("acceleronLunaAdminToken")){
+        $cookies.remove("acceleronLunaAdminToken");
         window.location = "adminlogin.html";
       }
     }
@@ -57,7 +57,7 @@ angular.module('tablesApp', ['ngCookies'])
       $scope.initSections = function(){
 	
 	      var data = {};
-	      data.token = $cookies.get("zaitoonAdmin");
+	      data.token = $cookies.get("acceleronLunaAdminToken");
 	      
 	      console.log(data)
 	      
@@ -98,7 +98,7 @@ angular.module('tablesApp', ['ngCookies'])
       $scope.initTables = function(){
 	
 	      var data = {};
-	      data.token = $cookies.get("zaitoonAdmin");	      
+	      data.token = $cookies.get("acceleronLunaAdminToken");	      
 	      
 	      $('#vegaPanelBodyLoaderTables').show(); $("body").css("cursor", "progress");
 	      $http({
@@ -143,7 +143,7 @@ angular.module('tablesApp', ['ngCookies'])
       $scope.confirmDeleteSection = function(code){
 	    	var data = {};
 	    	data.id = code;
-	        data.token = $cookies.get("zaitoonAdmin");
+	        data.token = $cookies.get("acceleronLunaAdminToken");
 	        $http({
 	          method  : 'POST',
 	          url     : 'https://accelerateengine.app/food-engine/apis/deskdeletetablesection.php',
@@ -186,7 +186,7 @@ angular.module('tablesApp', ['ngCookies'])
 			
 			var data = {};
 		    	data.name = $scope.newSectionContent.name;
-		        data.token = $cookies.get("zaitoonAdmin");
+		        data.token = $cookies.get("acceleronLunaAdminToken");
 		        $http({
 		          method  : 'POST',
 		          url     : 'https://accelerateengine.app/food-engine/apis/deskaddtablesection.php',
@@ -224,7 +224,7 @@ angular.module('tablesApp', ['ngCookies'])
       $scope.confirmDeleteTable = function(code){
 	    	var data = {};
 	    	data.id = code;
-	        data.token = $cookies.get("zaitoonAdmin");
+	        data.token = $cookies.get("acceleronLunaAdminToken");
 	        $http({
 	          method  : 'POST',
 	          url     : 'https://accelerateengine.app/food-engine/apis/deskdeletetable.php',
@@ -283,7 +283,7 @@ angular.module('tablesApp', ['ngCookies'])
 		    	data.name = $scope.newTableContent.name;
 		    	data.section = $scope.newTableContent.section;
 		    	data.capacity = $scope.newTableContent.capacity;
-		        data.token = $cookies.get("zaitoonAdmin");
+		        data.token = $cookies.get("acceleronLunaAdminToken");
 		        console.log(data)
 		        $http({
 		          method  : 'POST',
@@ -311,7 +311,7 @@ angular.module('tablesApp', ['ngCookies'])
 
      //Refresh Badge Counts
         var admin_data = {};
-        admin_data.token = $cookies.get("zaitoonAdmin");
+        admin_data.token = $cookies.get("acceleronLunaAdminToken");
         $http({
           method  : 'POST',
           url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',

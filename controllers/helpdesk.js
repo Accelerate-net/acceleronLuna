@@ -9,7 +9,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
   .controller('helpdeskController', function($scope, $http, $interval, $cookies) {
 
     //Check if logged in
-    if($cookies.get("zaitoonAdmin")){
+    if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
     else{
@@ -19,8 +19,8 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
 
     //Logout function
     $scope.logoutNow = function(){
-      if($cookies.get("zaitoonAdmin")){
-        $cookies.remove("zaitoonAdmin");
+      if($cookies.get("acceleronLunaAdminToken")){
+        $cookies.remove("acceleronLunaAdminToken");
         window.location = "adminlogin.html";
       }
     }
@@ -66,7 +66,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
        	  $scope.currentPage = pageId;
        	  
           var data = {};
-          data.token = $cookies.get("zaitoonAdmin");
+          data.token = $cookies.get("acceleronLunaAdminToken");
           data.id = pageId-1;
 	  if($scope.isFilterRequested){
 	  	data.searchkey = $scope.searchKey.value;
@@ -148,7 +148,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
         	$scope.isMoreLeft = true;
         	
 	          var data = {};
-	          data.token = $cookies.get("zaitoonAdmin");
+	          data.token = $cookies.get("acceleronLunaAdminToken");
 	          data.key = userMobile;
 	          data.id = 0;
 	
@@ -185,7 +185,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
       $scope.loadMore = function(userMobile){
         $scope.limiter = $scope.limiter + 3;
         var data = {};
-        data.token = $cookies.get("zaitoonAdmin");
+        data.token = $cookies.get("acceleronLunaAdminToken");
         data.key = userMobile;
         data.id = $scope.limiter;      
 
@@ -299,7 +299,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
         
         $scope.markSpam = function(uid){		
 		var data = {};
-		data.token = $cookies.get("zaitoonAdmin");	
+		data.token = $cookies.get("acceleronLunaAdminToken");	
 		data.id = uid;	
 
 		 $http({
@@ -336,7 +336,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
 		$scope.isReplyRequested = false;		
 		
 		var mydata = {};
-		mydata.token = $cookies.get("zaitoonAdmin");	
+		mydata.token = $cookies.get("acceleronLunaAdminToken");	
 		mydata.id = $scope.displayContent.id;	
 		mydata.replyText = $scope.replyContent.replyMessage;
 		mydata.replySubject = $scope.replyContent.replySubject;
@@ -428,7 +428,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
         
         //Refresh Badge Counts
         var admin_data = {};
-        admin_data.token = $cookies.get("zaitoonAdmin");
+        admin_data.token = $cookies.get("acceleronLunaAdminToken");
         $http({
           method  : 'POST',
           url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',

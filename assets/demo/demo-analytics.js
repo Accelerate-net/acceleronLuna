@@ -30,7 +30,7 @@ jQuery(document).ready(function() {
       var branchData = [];
         
       var val = {};
-      val.token = decodeURIComponent(getCookie("zaitoonAdmin"));
+      val.token = decodeURIComponent(getCookie("acceleronLunaAdminToken"));
       $("#graphLoader1").addClass("smallLoading");
       $("#graphLoader2").addClass("smallLoading");
       $("#graphLoader3").addClass("smallLoading");

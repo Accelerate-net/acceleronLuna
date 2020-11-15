@@ -8,7 +8,7 @@ angular.module('SettingsApp', ['ngCookies'])
   .controller('settingsController', function($scope, $http, $interval, $cookies) {
 
     //Check if logged in
-    if($cookies.get("zaitoonAdmin")){
+    if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
     else{
@@ -18,8 +18,8 @@ angular.module('SettingsApp', ['ngCookies'])
 
     //Logout function
     $scope.logoutNow = function(){
-      if($cookies.get("zaitoonAdmin")){
-        $cookies.remove("zaitoonAdmin");
+      if($cookies.get("acceleronLunaAdminToken")){
+        $cookies.remove("acceleronLunaAdminToken");
         window.location = "adminlogin.html";
       }
     }
@@ -36,7 +36,7 @@ angular.module('SettingsApp', ['ngCookies'])
       $scope.isNotFound = false;
       //Fetch Admin Details
       var data = {};
-      data.token = $cookies.get("zaitoonAdmin");
+      data.token = $cookies.get("acceleronLunaAdminToken");
 
       $http({
         method  : 'POST',
@@ -77,7 +77,7 @@ angular.module('SettingsApp', ['ngCookies'])
      		$scope.saveMsg = "";
      		
      		var mydata = {};
-      		mydata.token = $cookies.get("zaitoonAdmin");
+      		mydata.token = $cookies.get("acceleronLunaAdminToken");
       		mydata.name = $scope.admin.name;
       		
       		if($scope.changePassFlag){
@@ -120,7 +120,7 @@ angular.module('SettingsApp', ['ngCookies'])
      $scope.getOutletSettings = function(){
      
 	     	var admin_data = {};
-	        admin_data.token = $cookies.get("zaitoonAdmin");
+	        admin_data.token = $cookies.get("acceleronLunaAdminToken");
 	        $http({
 	          method  : 'POST',
 	          url     : 'https://accelerateengine.app/food-engine/apis/getsettingsadmin.php',
@@ -144,7 +144,7 @@ angular.module('SettingsApp', ['ngCookies'])
      $scope.setPayment = function(option){
          	
 	     	var admin_data = {};
-	        admin_data.token = $cookies.get("zaitoonAdmin");
+	        admin_data.token = $cookies.get("acceleronLunaAdminToken");
 	        admin_data.status = option;
 	        admin_data.type = 'PAYMENT';
 	        $http({
@@ -166,7 +166,7 @@ angular.module('SettingsApp', ['ngCookies'])
      $scope.setReservation = function(option){
          	
 	     	var admin_data = {};
-	        admin_data.token = $cookies.get("zaitoonAdmin");
+	        admin_data.token = $cookies.get("acceleronLunaAdminToken");
 	        admin_data.status = option;
 	        admin_data.type = 'RESERVATION';
 	        $http({
@@ -188,7 +188,7 @@ angular.module('SettingsApp', ['ngCookies'])
      $scope.setReward = function(option){
          	
 	     	var admin_data = {};
-	        admin_data.token = $cookies.get("zaitoonAdmin");
+	        admin_data.token = $cookies.get("acceleronLunaAdminToken");
 	        admin_data.status = option;
 	        admin_data.type = 'REWARD';
 	        $http({
@@ -212,7 +212,7 @@ angular.module('SettingsApp', ['ngCookies'])
 
      //Refresh Badge Counts
         var admin_data = {};
-        admin_data.token = $cookies.get("zaitoonAdmin");
+        admin_data.token = $cookies.get("acceleronLunaAdminToken");
         $http({
           method  : 'POST',
           url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',

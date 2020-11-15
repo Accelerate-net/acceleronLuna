@@ -8,7 +8,7 @@ angular.module('ResourcesApp', ['ngCookies'])
   .controller('deliveryagentController', function($scope, $http, $interval, $cookies) {
 
     //Check if logged in
-    if($cookies.get("zaitoonAdmin")){
+    if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
     else{
@@ -18,8 +18,8 @@ angular.module('ResourcesApp', ['ngCookies'])
 
     //Logout function
     $scope.logoutNow = function(){
-      if($cookies.get("zaitoonAdmin")){
-        $cookies.remove("zaitoonAdmin");
+      if($cookies.get("acceleronLunaAdminToken")){
+        $cookies.remove("acceleronLunaAdminToken");
         window.location = "adminlogin.html";
       }
     }
@@ -40,7 +40,7 @@ angular.module('ResourcesApp', ['ngCookies'])
       $scope.agentname = '';
       $scope.addAgent = function(){
         var data = {};
-        data.token = $cookies.get("zaitoonAdmin");
+        data.token = $cookies.get("acceleronLunaAdminToken");
         data.code = $scope.agentcode ;
         data.name = $scope.agentname ;
         if(data.code == "" || data.name == ""){
@@ -66,7 +66,7 @@ angular.module('ResourcesApp', ['ngCookies'])
 
       $scope.removeAgent = function(code){
         var data = {};
-        data.token = $cookies.get("zaitoonAdmin");
+        data.token = $cookies.get("acceleronLunaAdminToken");
         data.code = code;
         $http({
           method  : 'POST',
@@ -84,7 +84,7 @@ angular.module('ResourcesApp', ['ngCookies'])
 
        //Refresh Badge Counts
         var admin_data = {};
-        admin_data.token = $cookies.get("zaitoonAdmin");
+        admin_data.token = $cookies.get("acceleronLunaAdminToken");
         $http({
           method  : 'POST',
           url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',
@@ -131,7 +131,7 @@ angular.module('ResourcesApp', ['ngCookies'])
   .controller('financeledgerController', function($scope, $http, $interval, $cookies) {
 
     //Check if logged in
-    if($cookies.get("zaitoonAdmin")){
+    if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
     else{
@@ -141,8 +141,8 @@ angular.module('ResourcesApp', ['ngCookies'])
 
     //Logout function
     $scope.logoutNow = function(){
-      if($cookies.get("zaitoonAdmin")){
-        $cookies.remove("zaitoonAdmin");
+      if($cookies.get("acceleronLunaAdminToken")){
+        $cookies.remove("acceleronLunaAdminToken");
         window.location = "adminlogin.html";
       }
     }
@@ -229,7 +229,7 @@ angular.module('ResourcesApp', ['ngCookies'])
 		else{		
 			$scope.isWaitingResponse = true;
 		        var data = {};
-		        data.token = $cookies.get("zaitoonAdmin");
+		        data.token = $cookies.get("acceleronLunaAdminToken");
 		        data.fromDate = formatDate(document.getElementById("quickFromDate").value);
 		        data.toDate = formatDate(document.getElementById("quickToDate").value);		        
 		        data.outlet = localStorage.getItem("branchCode");
@@ -279,7 +279,7 @@ angular.module('ResourcesApp', ['ngCookies'])
 	    
             var temp_from = formatDate(document.getElementById("reportFromDate").value);
             var temp_to = formatDate(document.getElementById("reportToDate").value);
-            var temp_token = encodeURIComponent($cookies.get("zaitoonAdmin"));
+            var temp_token = encodeURIComponent($cookies.get("acceleronLunaAdminToken"));
             
             /* OLD Function
             function formatDate(date) {
@@ -311,7 +311,7 @@ angular.module('ResourcesApp', ['ngCookies'])
 
         //Refresh Badge Counts
         var admin_data = {};
-        admin_data.token = $cookies.get("zaitoonAdmin");
+        admin_data.token = $cookies.get("acceleronLunaAdminToken");
         $http({
           method  : 'POST',
           url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',

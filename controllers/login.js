@@ -31,7 +31,7 @@ angular.module('AdminLoginApp', ['ngCookies'])
             //Set cookies
             var now = new Date();
             now.setDate(now.getDate() + 7);
-            $cookies.put("zaitoonAdmin", $scope.token, {
+            $cookies.put("acceleronLunaAdminToken", $scope.token, {
                 expires: now
             });
 

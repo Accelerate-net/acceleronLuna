@@ -9,7 +9,7 @@ angular.module('vouchersApp', ['ngCookies'])
   .controller('vouchersController', function($scope, $http, $interval, $cookies) {
 
     //Check if logged in
-    if($cookies.get("zaitoonAdmin")){
+    if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
     else{
@@ -19,8 +19,8 @@ angular.module('vouchersApp', ['ngCookies'])
 
     //Logout function
     $scope.logoutNow = function(){
-      if($cookies.get("zaitoonAdmin")){
-        $cookies.remove("zaitoonAdmin");
+      if($cookies.get("acceleronLunaAdminToken")){
+        $cookies.remove("acceleronLunaAdminToken");
         window.location = "adminlogin.html";
       }
     }
@@ -69,7 +69,7 @@ angular.module('vouchersApp', ['ngCookies'])
 $scope.initVouchers = function(){
 
       var data = {};
-      data.token = $cookies.get("zaitoonAdmin");
+      data.token = $cookies.get("acceleronLunaAdminToken");
       data.id = 0;
       data.key = today;
       
@@ -130,7 +130,7 @@ $scope.initVouchers();
       $scope.search = function() {
 
         var data = {};
-        data.token = $cookies.get("zaitoonAdmin");
+        data.token = $cookies.get("acceleronLunaAdminToken");
         data.key = $scope.searchID;
         data.id = 0;
                
@@ -172,7 +172,7 @@ $scope.initVouchers();
       $scope.loadMore = function(){
         $scope.limiter = $scope.limiter + 10;
         var data = {};
-        data.token = $cookies.get("zaitoonAdmin");
+        data.token = $cookies.get("acceleronLunaAdminToken");
         data.key = $scope.searchID;
         data.id = $scope.limiter;
 
@@ -253,7 +253,7 @@ $scope.initVouchers();
       $scope.generateReport = function(type){
       	var from = ''; 
       	var to = '';
-      	var temp_token = encodeURIComponent($cookies.get("zaitoonAdmin"));
+      	var temp_token = encodeURIComponent($cookies.get("acceleronLunaAdminToken"));
       	
   	if(type == 'RANGE'){
   		if(document.getElementById("reportFromDate").value == '' || document.getElementById("reportToDate").value == ''){
@@ -294,7 +294,7 @@ $scope.initVouchers();
          $scope.confirmCancel = function(code){
 	    	var data = {};
 	    	data.id = code;
-	        data.token = $cookies.get("zaitoonAdmin");
+	        data.token = $cookies.get("acceleronLunaAdminToken");
 	        $http({
 	          method  : 'POST',
 	          url     : 'https://accelerateengine.app/food-engine/apis/cancelvoucheradmin.php',
@@ -361,7 +361,7 @@ $scope.initVouchers();
 		if($scope.newVoucherContent.code != ''){
 		    	var data = {};
 		    	data.code = $scope.newVoucherContent.code;
-		        data.token = $cookies.get("zaitoonAdmin");
+		        data.token = $cookies.get("acceleronLunaAdminToken");
 		        $scope.isLoading = true;
 		        $http({
 		          method  : 'POST',
@@ -490,7 +490,7 @@ $scope.initVouchers();
 	$scope.confirmVoucher = function(){
 			var data = {};
 		    	data.details = $scope.newVoucherContent;
-		        data.token = $cookies.get("zaitoonAdmin");
+		        data.token = $cookies.get("acceleronLunaAdminToken");
 		        $http({
 		          method  : 'POST',
 		          url     : 'https://accelerateengine.app/food-engine/apis/newvoucheradmin.php',
@@ -512,7 +512,7 @@ $scope.initVouchers();
 
      //Refresh Badge Counts
         var admin_data = {};
-        admin_data.token = $cookies.get("zaitoonAdmin");
+        admin_data.token = $cookies.get("acceleronLunaAdminToken");
         $http({
           method  : 'POST',
           url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',
