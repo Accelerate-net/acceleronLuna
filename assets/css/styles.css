@@ -1,3 +1,232 @@
+@-webkit-keyframes tada {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+
+  10%,
+  20% {
+    -webkit-transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+  }
+
+  30%,
+  50%,
+  70%,
+  90% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+  }
+
+  40%,
+  60%,
+  80% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+    color: #ffde61;
+  }
+
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes tada {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+
+  10%,
+  20% {
+    -webkit-transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+  }
+
+  30%,
+  50%,
+  70%,
+  90% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+  }
+
+  40%,
+  60%,
+  80% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+    color: #ffde61;
+  }
+
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@-webkit-keyframes superFlash {
+  from,
+  50%,
+  to {
+    opacity: 1;
+  }
+
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+@keyframes superFlash {
+  from,
+  50%,
+  to {
+    opacity: 1;
+  }
+
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+
+.tablesSection{
+  text-align: center;
+  margin: 0;
+  padding: 5px 20px;
+}
+
+.tablesSection h1{
+  font-size: 24px;
+}
+
+.tableTile{
+  width: 115px;
+  display: inline-block;
+  padding: 0 8px 8px 8px;
+  height: 75px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 2px 0px #bfbfbf;
+  margin: 0px 6px 6px 0;
+  cursor: pointer;
+  background: #929db1;
+  position: relative;
+}
+
+.serviceWarningContent{
+  display: none;
+}
+
+.tableTile.serviceWarning .serviceWarningContent {
+  display: initial !important; 
+  color: #FFF;
+  position: absolute;
+  left:0;
+  right:0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.serviceWarningContent .animate{
+  -webkit-animation: superFlash .7s infinite;
+  animation: superFlash .7s infinite;
+}
+
+.serviceWarningContent .bell{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    animation: tada 1s linear infinite;
+}
+
+@keyframes showFirstAnimation {
+  from,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes showSecondAnimation {
+  from,
+  50% {
+    opacity: 0;
+  }
+
+  51%,
+  to {
+    opacity: 1;
+  }
+}
+
+
+.serviceWarningContent .icon{
+  margin: 5px 0 0 0;
+  font-size: 32px;
+  display: inline-block;
+  animation: showFirstAnimation 4s linear infinite;
+  width: 100%;
+}
+
+.serviceWarningContent .background{
+  margin: 0;
+  font-size: 40px;
+  display: inline-block;
+  animation: showSecondAnimation 4s linear infinite;
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+
+.serviceWarningContent .label{
+  margin: 0;
+  font-size: 18px;
+  display: inline-block;
+}
+
+
+.tableTile.serviceWarning .tableLabel,
+.tableTile.serviceWarning .tableText{
+  visibility: hidden;
+}
+
+.tableTile.active{
+  background: #e74c3c !important;
+}
+
+.tableTile.free{
+  background: #2ecc71 !important;
+}
+
+.tableTile.new{
+  background: #03a9f4 !important;
+}
+
+.tableTile.billed{
+  background: #f39c12 !important;
+}
+
+.tableTile .tableLabel {
+      text-align: center;
+    display: block;
+    font-size: 32px;
+    font-weight: bold;
+    color: #FFF;
+}
+
+.tableTile .tableText{
+      font-size: 12px;
+    color: #ffeeee;
+    text-align: center;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 
 .chooserButton{
