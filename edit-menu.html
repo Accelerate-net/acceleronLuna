@@ -157,17 +157,37 @@
                     <div class="widget stay-on-collapse" id="widget-sidebar">
                        <nav role="navigation" class="widget-body">
                            <ul class="acc-menu">
-                              <li><a href="index.html"><i class="ti ti-layout-grid2"></i><span>Live Orders</span><span class="badge badge-teal" ng-if="pending_orders_length > 0">{{pending_orders_length}}</span></a></li>
-                              <li><a href="completed-orders.html"><i class="ti ti-check-box"></i><span>Completed Orders</span></a></li>
+                              <!-- Smart Orders -->
+                              <li>
+                                  <a href="index.html" class="smartOrderTab"><i class="ti ti-tablet"></i><span>Smart Orders</span><span class="badge badge-teal" ng-if="smart_orders_length > 0">{{smart_orders_length}}</span></a>
+                              </li>
+                              <li>
+                                  <a href="smart-orders-history.html" class="smartOrderTab"><i class="ti ti-check-box"></i><span>Smart Orders <b class="greyBadge"> Completed</b></a>
+                              </li>
+                              <!-- Online Orders -->
+                              <li>
+                                <a href="online-orders.html" class="onlineOrderTab"><i class="ti ti-truck"></i><span>Online Orders</span><span class="badge badge-teal" ng-if="pending_orders_length > 0">{{pending_orders_length}}</span></a>
+                              </li>
+                              <li>
+                                <a href="online-orders-history.html" class="onlineOrderTab"><i class="ti ti-check-box"></i><span>Online Orders <b class="greyBadge"> Completed</b></span></a>
+                              </li>
                               <li><a href="helpline-inbox.html"><i class="ti ti-headphone-alt"></i><span>Helpdesk</span><span class="badge badge-inverse" ng-if="helprequests_length > 0">{{helprequests_length}}</span></a></li>
-                              <li><a href="edit-menu.html"><i class="ti ti-menu"></i><span>Edit Menu</span></a></li>
+                              <li><a href="edit-menu.html"><i class="ti ti-receipt"></i><span>Master Menu</span></a></li>
                               <li><a href="reservations.html"><i class="ti ti-bookmark-alt"></i><span>Reservations</span><span class="badge badge-inverse" ng-if="reservations_length > 0">{{reservations_length}}</span></a></li>
                               <li><a href="feedback.html"><i class="ti ti-thumb-up"></i><span>Feedbacks</span></a></li>
+                              <!-- Order Settings -->
                               <li>
-                                     <a href="javascript:;"><i class="ti ti-settings"></i><span>Tools</span></a>
+                                    <a href="javascript:;"><i class="ti ti-settings"></i><span>Order Settings</span></a>
+                                    <ul class="acc-menu">
+                                        <li><a href="smart-orders-rejected.html">Smart Orders - Rejected</a></li>
+                                        <li><a href="failed-orders.html">Online Orders - Failed</a></li>
+                                        <li><a href="smart-orders-settings.html">Smart Order Settings</a></li>
+                                     </ul>
+                              </li>
+                              <li>
+                                     <a href="javascript:;"><i class="ti ti-view-grid"></i><span>Tools</span></a>
                                      <ul class="acc-menu">
                                         <li><a href="resources-deliveryboy.html">Delivery Agents</a></li>
-                                        <li><a href="failed-orders.html">Failed Orders</a></li>
                                         <li><a href="finance-ledger.html">Sales Ledger</a></li>
                                         <li><a href="user-profile.html">Search User</a></li>
                                      </ul>

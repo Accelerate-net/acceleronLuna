@@ -1,3 +1,180 @@
+.greyBadge{
+    background: #4caf50;
+    font-weight: unset;
+    color: #FFF;
+    border-radius: 2px;
+    padding: 2px 6px;
+    font-size: 11px;
+}
+
+.smartOrderTab{
+  background: #d1ebff !important;
+}
+
+.smartOrderTab:hover, .smartOrderTab:focus, .smartOrderTab:active, .active .smartOrderTab{
+  background: #bddbf3 !important;
+}
+
+.onlineOrderTab{
+  background: #fff3d0 !important;
+}
+
+.onlineOrderTab:hover, .onlineOrderTab:focus, .onlineOrderTab:active, .active .onlineOrderTab{
+  background: #f5e8c4 !important;
+}
+
+
+#punchOrderModal .tableTitle{
+    background: #616161;
+    color: #FFF;
+    padding: 2px 10px;
+    border-radius: 2px;
+    float: left;
+    font-size: 21px;
+    margin: 0;
+    display: inline-block;
+}
+
+#punchOrderModal .itemQty{
+  font-size: 21px;
+}
+
+.itemQty .itemQtyCross{
+    color: #607D8B;
+    font-weight: 300;
+    margin-right: 3px;
+    font-size: 75%;
+}
+
+#punchOrderModal .itemName{
+    font-size: 18px;
+    font-weight: 300;
+}
+
+#punchOrderModal .itemNameVariant{
+    font-size: 14px;
+    font-weight: 300;
+    color: #FF5722;
+    margin-left: 10px;
+}
+
+#punchOrderModal .itemAvailableButton{
+    background: #4CAF50;
+    width: 100%;
+    display: block;
+    border-radius: 2px;
+    padding: 4px;
+    text-align: center;
+    font-weight: bold;
+    color: #FFF;
+    cursor: pointer;
+    max-width: 60px;
+}
+
+.itemAvailableButton.notAvailable{
+  background: #f44336 !important;
+}
+
+.center{
+  text-align: center;
+}
+
+.orderTableBlock .stewardDetails{
+    float: right;
+    padding: 10px 0;
+}
+
+#punchOrderModal .tableNumber{
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#punchOrderModal .stewardName{
+    font-size: 14px;
+    font-weight: bold;
+    color: #2196f3;
+    margin: 0 5px 0 20px;
+}
+
+#punchOrderModal .timeStamp{
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+#punchOrderModal .orderTableBlock{
+    float: left;
+}
+
+#punchOrderModal .orderTimeBlock{
+    float: right;
+}
+
+.orderTimeBlock .orderTime{
+  font-size: 18px;
+    font-weight: 300;
+    position: inherit;
+    height: 36px;
+    display: inline-block;
+    padding: 5px 10px;
+}
+
+.orderTimeBlock .orderLabel{
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFF;
+    float: right;
+    background: #4CAF50;
+    padding: 5px 10px;
+    border-radius: 2px;
+}
+
+.orderLabel.runningOrder{
+  background: #ff9800 !important;
+}
+
+#serviceRequestModal h1{
+  text-align: center;
+  margin: 0;
+}
+
+#serviceRequestModal .table{
+    color: #FFF;
+    font-weight: bold;
+    padding: 20px;
+}
+
+#serviceRequestModal .service{
+    background: #E91E63;
+    color: #FFF;
+    font-weight: bold;
+    padding: 20px;
+}
+
+.punchOrderAccept{
+    border: 0 !important;
+    border-radius: 0 !important;
+    width: 80% !important;
+    margin: 0 !important;
+    height: 60px !important;
+}
+
+.punchOrderReject{
+    float: left !important;
+    width: 20% !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    height: 60px !important;
+}
+
+.punchOrderFooter{
+  padding: 0 !important;
+    border: none !important;
+    height: 60px !important;
+}
+
+
 @-webkit-keyframes tada {
   from {
     -webkit-transform: scale3d(1, 1, 1);
@@ -210,17 +387,21 @@
   background: #f39c12 !important;
 }
 
+.tableTile.settled{
+  background: #f39c12 !important;
+}
+
 .tableTile .tableLabel {
       text-align: center;
     display: block;
     font-size: 32px;
     font-weight: bold;
-    color: #FFF;
+    color: #FFF !important;
 }
 
 .tableTile .tableText{
       font-size: 12px;
-    color: #ffeeee;
+    color: #ffeeee !important;
     text-align: center;
     display: block;
     white-space: nowrap;

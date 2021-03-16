@@ -7,6 +7,10 @@ angular.module('SmartOrdersApp', ['ngCookies'])
 
 .controller('smartOrdersController', function($scope, $http, $interval, $cookies) {
 
+const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F7Wg6G8g0PY2zmkff5rCh%2BPGETDqicga%2B2XyW9hsC3qlAOG0OrAJwvjTCC8%3D";
+
+
+
       //Check if logged in
       // if($cookies.get("acceleronLunaAdminToken")){
       //   $scope.isLoggedIn = true;
@@ -33,7 +37,7 @@ angular.module('SmartOrdersApp', ['ngCookies'])
 
 
       var data = {};
-      data.token = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOjMmduTS8FqbWXZu3C46tTVWfJK2QlHYHIQvEmu05QacaIoEtT4ABkAPy3dnnxeGYI%3D"//$cookies.get("acceleronLunaAdminToken");
+      data.token = TOKEN_FOR_TESTING;//$cookies.get("acceleronLunaAdminToken");
       $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
       $http({
         method  : 'POST',
@@ -42,7 +46,6 @@ angular.module('SmartOrdersApp', ['ngCookies'])
         headers : {'Content-Type': 'application/x-www-form-urlencoded'}
       })
       .then(function(response) {
-        console.log(response)
          $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
          if(response.data.status){
            $scope.tablesList = response.data.data;
@@ -52,6 +55,149 @@ angular.module('SmartOrdersApp', ['ngCookies'])
            $scope.isTablesLoaded = false;
          }
       });
+
+      $scope.individualOrder = {};
+
+      $scope.openTable = function(table){
+        console.log(table);
+        $scope.currentTableData = table;
+
+        var isTableOccuppied = !$scope.currentTableData.isTableFree;
+        var tableOrderStatus = $scope.currentTableData.orderStatus;
+
+        if(isTableOccuppied){
+            if(table.hasNewOrder){ //There is a new order on the table --> Punch
+                var data = {};
+                data.token = TOKEN_FOR_TESTING;//$cookies.get("acceleronLunaAdminToken");
+                data.masterorder = table.masterOrderId;
+                $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+                $http({
+                  method  : 'POST',
+                  url     : 'https://accelerateengine.app/smart-menu/apis/fetchorder.php',
+                  data    : data,
+                  headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+                })
+                .then(function(response) {
+                  console.log(response)
+                   $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+                   if(response.data.status){
+                     $scope.individualOrder = response.data.data;
+                     var cart = $scope.individualOrder.cart;
+                     for(var i = 0; i < cart.length; i++){
+                        cart[i].isAvailable = true;
+                     }
+
+                     $scope.individualOrder.cart = cart;
+
+                     $('#punchOrderModal').modal('show');
+                   }
+                   else{
+                     alert('Failed to load the order - ' + response.data.error);
+                   }
+                });
+            }
+            else{
+                  var hasActiveRequest = table.activeServiceRequest != "" ? true : false;
+                  if(hasActiveRequest){ //There is active service request on the table --> Acknowledge
+
+                  }
+                  else{
+                        if(tableOrderStatus == 0){ //show VIEW ITEMS / GENERATE BILL options
+                          $scope.showOptions(['VIEW_ORDERS', 'GENERATE_BILL']);
+                          //$('#generateBillModal').modal('show');
+                        }
+                        else if(tableOrderStatus == 1){ //already billed - waiting for settlement (orange tile) - show VIEW ITEMS / SETTLE BILL options
+                          $scope.showOptions(['SETTLE_BILL', 'VIEW_ORDERS']);
+                        }
+                        else if(tableOrderStatus == 2){ //bill paid - show Confirm and clear mapping (remove table - qr mapping) 
+                          $scope.showOptions(['CONFIRM_PAYMENT']);
+                        }
+                  }
+            }
+        }
+
+      }
+
+      $scope.getOrderCount = function(number){
+        if(number == 1){
+          return "2nd";
+        }
+        else if(number == 2){
+          return "3rd";
+        }
+        else if(number > 2){
+          return (number+1) + "th";
+        }
+      }
+
+
+      $scope.showOptions = function(optionsList){
+        
+        $('#tableOptionsModal').modal('show');
+        for(var i = 0; i < optionsList.length; i++){
+
+        }
+      }
+
+
+      $scope.changeItemAvailability = function(item){
+         var cart = $scope.individualOrder.cart;
+         for(var i = 0; i < cart.length; i++){
+            if(cart[i].code == item.code && cart[i].variant == item.variant){
+              cart[i].isAvailable = !cart[i].isAvailable;
+            }
+         }
+         $scope.individualOrder.cart = cart;
+      }
+
+      $scope.generateBillForTable = function(tableData){
+              
+              console.log('tableData', tableData);
+
+              var data = {};
+              data.token = TOKEN_FOR_TESTING; //$cookies.get("acceleronLunaAdminToken");
+              data.masterorder = 59;
+              data.systemBillNumber = tableData.systemBillNumber;
+              data.totalBillAmount = tableData.billAmount;
+              $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+              $http({
+                method  : 'POST',
+                url     : 'https://accelerateengine.app/smart-menu/apis/generateinvoice.php',
+                data    : data,
+                headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+              })
+              .then(function(response) {
+                console.log(response)
+                 $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+                 if(response.data.status){
+                   $('#generateBillModal').modal('hide');
+                 }
+                 else{
+                   alert('Failed to generate bill - ' + response.data.error);
+                 }
+              });
+
+
+
+      }
+
+
+      $scope.punchOrderAccept = function(currentTableData, individualOrder){
+        console.log(currentTableData, individualOrder)
+      }
+
+      $scope.punchOrderReject = function(currentTableData, individualOrder){
+        
+      }
+
+      $scope.getOrderTime = function(time, format){
+        if(format == 'PAST'){
+          return moment(time).fromNow();
+        }
+        if(format == 'ABSOLUTE'){
+          return moment(time).format('LT');
+        }
+      }
 
       $scope.getTileClasses = function(table){
 
@@ -70,6 +216,10 @@ angular.module('SmartOrdersApp', ['ngCookies'])
             tileColor = "billed";
             break;
           }
+          case "2":{
+            tileColor = "settled";
+            break;
+          }
           default:{
             tileColor = "free";
           }
@@ -79,7 +229,8 @@ angular.module('SmartOrdersApp', ['ngCookies'])
           tileColor = "new";
         }
 
-        if(!table.isTableFree){
+        var isServiceRequest = table.activeServiceRequest != "" ? true : false;
+        if(isServiceRequest){
           tileColor = tileColor + " serviceWarning";
         }
 
@@ -109,6 +260,12 @@ angular.module('SmartOrdersApp', ['ngCookies'])
             }
             return "Billed";
           }
+          case "2":{
+            if(table.systemBillNumber && table.systemBillNumber != ""){
+              return "Billed #" + table.systemBillNumber;
+            }
+            return "Billed";
+          }
           default:{
             return "";
           }
@@ -116,19 +273,38 @@ angular.module('SmartOrdersApp', ['ngCookies'])
       }
 
 
-      $scope.getServiceWarningIcon = function(requestType){
+      $scope.getServiceWarningIcon = function(table){
+        var requestType = table.activeServiceRequest;
         switch(requestType){
-          case "TAKE_BILL":{
+          case "CALL_REQUEST_BILL":{
             return "fa-file-text-o";
           }
-          case "CALL_STEWARD":{
+          case "CALL_CALL_STEWARD":{
             return "fa-user-o";
           }
-          case "SERVE_FAST":{
+          case "CALL_SERVE_FAST":{
             return "fa-bolt";
           }
           default:{
             return "fa-paper-o";
+          }
+        }
+      }
+
+      $scope.getServiceWarningLabel = function(table){
+        var requestType = table.activeServiceRequest;
+        switch(requestType){
+          case "CALL_REQUEST_BILL":{
+            return "Take Bill";
+          }
+          case "CALL_CALL_STEWARD":{
+            return "Attend";
+          }
+          case "CALL_SERVE_FAST":{
+            return "Serve Fast";
+          }
+          default:{
+            return "Attend";
           }
         }
       }
