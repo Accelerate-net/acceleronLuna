@@ -1,3 +1,166 @@
+.chooseCaptainButton{
+    display: block;
+    background: #FFF;
+    color: #009688;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: 2px solid #009688;
+    margin-bottom: 3px;
+    cursor: pointer;
+}
+
+.chooseCaptainButton:hover{
+    background: #009688;
+    color: #FFF;  
+}
+
+.chooseCaptainButtonSelect{
+    display: block;
+    background: #009688;
+    color: #FFF;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: 2px solid #009688;
+    margin-bottom: 3px;
+    cursor: pointer;
+}
+
+.defaultCaptainTick{
+  visibility: hidden;
+  float: right;
+}
+
+.chooseCaptainButtonSelect .defaultCaptainTick{
+  visibility: initial;
+}
+
+.smartOrderSettings .timeText{
+    font-size: 80%;
+    color: #9e9e9e;
+    display: block;
+}
+
+.smartOrderSettings .currentRow:hover .tableBowl{
+    background: #2196f3;
+    color: #FFF;
+}
+
+.smartOrderSettings .cell {
+    vertical-align: middle;
+    display: table-cell;
+}
+
+.smartOrderSettings .downloadButton{
+  color: #2196f3;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.smartOrderSettings .captainAssigned{
+    font-weight: bold;
+    width: 100px;
+    height: 40px;
+    background: #4caf4f;
+    display: inline-block;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 3px;
+    color: #FFF;
+    cursor: pointer;
+    position: relative;
+}
+
+.smartOrderSettings .captainAssigned:hover{
+    background: #2c752e;
+}
+
+.smartOrderSettings .captainUnassigned{
+    font-weight: 400;
+    width: 100px;
+    height: 40px;
+    background: #e0e0e0;
+    display: inline-block;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 3px;
+    color: #cccccc;
+    cursor: pointer;
+}
+
+.smartOrderSettings .activeButton{
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    font-size: 30px;
+    line-height: 50px;
+    text-align: center;
+    color: #4caf50;
+    cursor: pointer;
+}
+
+.smartOrderSettings .activeButton:hover{
+  color: #2c752e;
+}
+
+.smartOrderSettings .notActiveButton{
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    font-size: 30px;
+    line-height: 50px;
+    text-align: center;
+    color: #f44336;
+    cursor: pointer;
+}
+
+.smartOrderSettings .notActiveButton:hover{
+    color: #c5443b;
+}
+
+.smartOrderSettings .activeButtonYellow{
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    font-size: 30px;
+    line-height: 50px;
+    text-align: center;
+    color: #ffc107;
+    cursor: pointer;
+}
+
+.smartOrderSettings .activeButtonYellow:hover{
+    color: #efb814;
+}
+
+
+.smartOrderSettings .activeButtonGrey{
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    font-size: 30px;
+    line-height: 50px;
+    text-align: center;
+    color: #e0e0e0;
+    cursor: pointer;
+}
+
+.smartOrderSettings .tableBowl{
+    font-weight: bold;
+    font-family: 'Source Sans Pro';
+    font-size: 24px;
+    background: #f1f1f1;
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    border-radius: 5px;
+    line-height: 50px;
+    text-align: center;  
+}
+
+
+
+
+
 .splitOrderSection{
   border: 1px solid #a7a7a7;
   padding: 5px;

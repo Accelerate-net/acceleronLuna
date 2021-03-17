@@ -113,7 +113,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
 
 
       $scope.openTable = function(table){
-        console.log(table);
         if(table.activeServiceRequest){
           //Acknowledge service
           $scope.showServiceRequestModal(table);
@@ -138,7 +137,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
                   headers : {'Content-Type': 'application/x-www-form-urlencoded'}
                 })
                 .then(function(response) {
-                  console.log(response)
                    $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
                    if(response.data.status){
                      $scope.individualOrder = response.data.data;
@@ -211,8 +209,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
       }
 
       $scope.generateBillForTable = function(tableData){
-              
-              console.log('tableData', tableData);
 
               var data = {};
               data.token = TOKEN_FOR_TESTING; //$cookies.get("acceleronLunaAdminToken");
@@ -227,7 +223,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
                 headers : {'Content-Type': 'application/x-www-form-urlencoded'}
               })
               .then(function(response) {
-                console.log(response)
                  $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
                  if(response.data.status){
                    $('#generateBillModal').modal('hide');
@@ -310,7 +305,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
                     })
                     .then(function(response) {
                         let data = response.data;
-                        console.log(data)
                         if(data.rows.length >= 1){
                                 var thisTable = data.rows[0].value;
                                 if(thisTable.status != 0){
@@ -711,7 +705,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
           headers : {'Content-Type': 'application/x-www-form-urlencoded'}
          })
          .then(function(response) {
-         console.log(response);
            if(response.data.status){
              $scope.isOrdersFound = true;
              $scope.completed_orders = $scope.completed_orders.concat(response.data.response);
@@ -1159,7 +1152,7 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
       var data = {};
       data.token = $cookies.get("acceleronLunaAdminToken");
       data.reason = close_reason;
-      console.log(data)
+
       $http({
         method  : 'POST',
         url     : 'https://accelerateengine.app/food-engine/apis/setoutletstatus.php',
@@ -1261,7 +1254,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
 
 
     $scope.showPending = function(){
-      console.log('show pending_orders')
       $scope.showDeliveryAgents = false; // Hide choose agent option
 
       document.getElementById("pendingTitle").style.color = "#FFF";
@@ -1302,14 +1294,11 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
        .then(function(response) {
             $scope.pending_orders = response.data.response;
             $scope.pending_orders_length = response.data.count;
-            //console.log($scope.pending_orders.length);
-            //console.log($scope.pending_orders);
+
             //Default ORDER to display:
             if($scope.isPendingDisplayed){
-              console.log('******************DEFAULT ID'+$scope.pending_orders[0].orderID);
               $scope.displayOrderID = $scope.pending_orders[0].orderID;
               $scope.displayOrderContent = $scope.pending_orders[0];
-              console.log($scope.displayOrderContent)
             }
 
           });
@@ -1328,9 +1317,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
         headers : {'Content-Type': 'application/x-www-form-urlencoded'}
       })
       .then(function(response) {
-      console.log('fetching confirmed orders')
-      console.log(response)
-      
       if(response.data.error != ''){
                	var x = document.getElementById("infobar")
 		x.innerHTML = "Error: "+response.data.error;
@@ -1405,7 +1391,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
             i++;
         }
       }
-      console.log($scope.displayOrderContent)
     }
 
 
@@ -1420,7 +1405,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
         headers : {'Content-Type': 'application/x-www-form-urlencoded'}
        })
        .then(function(response) {
-         console.log(response)
          if(response.data.status){
             $scope.initializePendingOrders();
             $scope.displayOrderID = "";
@@ -1503,7 +1487,7 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
         headers : {'Content-Type': 'application/x-www-form-urlencoded'}
        })
        .then(function(response) {
-         console.log(response)
+
          if(response.data.status){
             $scope.initializePendingOrders();
             $scope.displayOrderID = "";
@@ -1569,4 +1553,208 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
 
 	})
 
+
+
+  
+
+
+  .controller('smartOrdersSettingsController', function($scope, $http, $interval, $cookies) {
+
+      //Check if logged in
+      if($cookies.get("acceleronLunaAdminToken")){
+        $scope.isLoggedIn = true;
+      }
+      else{
+        $scope.isLoggedIn = false;
+        window.location = "adminlogin.html";
+      }
+
+      //Logout function
+      $scope.logoutNow = function(){
+        if($cookies.get("acceleronLunaAdminToken")){
+          $cookies.remove("acceleronLunaAdminToken");
+          window.location = "adminlogin.html";
+        }
+      }
+
+      $scope.outletCode = localStorage.getItem("branch");
+
+
+      //Outlet Open/Close status
+      $scope.isOutletClosed = false;
+      $http.get("https://accelerateengine.app/food-engine/apis/getoutletstatus.php?outlet="+localStorage.getItem("branchCode")).then(function(data) {
+          var temp = JSON.parse(data);
+          if(temp.status){
+            $scope.isOutletClosed = false;
+          }
+          else{
+            $scope.isOutletClosed = true;
+          }
+      });
+
+      /* Loading Animation */
+      var toastShowingInterval;
+      function showToast(message, color){
+          clearInterval(toastShowingInterval);
+          var x = document.getElementById("infobar");
+          x.style.background = color && color != '' ? color : '#ff9607';
+          x.innerHTML = message ? '<tag id="infotext">'+message+'</tag>' : '<tag id="infotext">Loading...</tag>';
+          x.className = "show"; 
+          x.classList.add('blink_me');
+      }
+      function updateToastAndClose(message, color){
+          clearInterval(toastShowingInterval);
+          var x = document.getElementById("infobar");
+          x.style.background = color;
+          x.innerHTML = message ? message : 'Completing...';
+          x.classList.remove('blink_me');
+          toastShowingInterval = setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+      }
+      function hideToast(){
+        clearInterval(toastShowingInterval);
+        var x = document.getElementById("infobar");
+        toastShowingInterval = setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+      }
+
+
+      $scope.qrConfigData = [];
+      $scope.isQrConfigFound = false;
+
+      $scope.loadConfiguredQR = function(){
+            var data = {};
+            data.token = $cookies.get("acceleronLunaAdminToken");
+            
+            $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+            $http({
+              method  : 'POST',
+              url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-fetchqrconfig.php',
+              data    : data,
+              headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+             })
+             .then(function(response) {
+                   $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+                   if(response.data.status){
+                      $scope.qrConfigData = response.data.data;
+                      $scope.isQrConfigFound = true;
+                   }
+                   else{
+                      $scope.isQrConfigFound = false;
+                      $scope.resultMessage = "There are no QRs configured at this outlet";
+                   }
+              });
+      }
+
+      $scope.loadConfiguredQR();
+
+
+      $scope.getScannerDownloadLink = function(qrData){
+        let branchCode = qrData.branch;
+        let table = qrData.table;
+        window.open("https://accelerateengine.app/food-engine/qr-scanner-generator/generate.php?branch="+branchCode+"&table="+table);
+      }
+
+      $scope.getFormattedTime = function(text, type){
+        if(type == 'TIME')
+          return moment(text, 'YYYY-MM-DD hh:mm:ss').format('HH:mm a');
+        else if (type == 'DATE')
+          return moment(text, 'YYYY-MM-DD hh:mm:ss').format('DD-MM-YYYY');
+        else 
+          return moment(text, 'YYYY-MM-DD hh:mm:ss').format('HH:mm a / DD-MM-YYYY');
+      }
+
+
+      $scope.getRandomColorForCaptains = function(code){
+        var hex = code.substring(4, 10);
+        var color = "";
+        if(hex.length < 3){
+          color = "#000";
+        } else {
+          color = "#" + hex;
+        }
+        return {
+          "background": color
+        }
+      }
+
+
+       //Assign Captain
+       $scope.assignCaptain = function(qrData){
+            $scope.selectedQrData= qrData;
+            var temp_branch = localStorage.getItem("branchCode");
+            $http({
+              method  : 'GET',
+              url     : 'https://accelerateengine.app/food-engine/apis/fetchroles.php?branch='+temp_branch+'&role=CAPTAIN',
+              headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+             })
+             .then(function(response) {
+                   $scope.allStaffList = response.data.results;
+                   $('#chooseCaptainModal').modal('show');
+              });
+       }
+
+       $scope.assignCaptainToTable = function(qrData, captainData){
+
+            var data = {};
+            data.token = $cookies.get("acceleronLunaAdminToken");
+            data.captainCode = captainData.code;
+            data.table = qrData.table;
+          
+            $http({
+                method  : 'POST',
+                url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-assigncaptaintotable.php',
+                data    : data,
+                headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+            })
+            .then(function(response) {
+               if(!response.data.status){
+                  showToast("Failed to assign : " + response.data.error, "#f44336");
+               }
+               else {
+                  $('#chooseCaptainModal').modal('hide');
+                  $scope.loadConfiguredQR();
+               }
+            });
+       }
+
+       $scope.getCaptainClass = function(qrData, captainData){
+          if(qrData.isCaptainAssigned && qrData.assignedCaptainCode == captainData.code){
+            return 'chooseCaptainButtonSelect';
+          }
+
+          return 'chooseCaptainButton';
+       }
+
+
+
+       //Update Settings
+       $scope.updateSettings = function(qrData, type, flag){
+          if(type == 'MAINTAIN'){
+            qrData.isMaintainMode = flag;
+          } else if(type == 'PAYMENT'){
+            qrData.isPaymentEnabled = flag;
+          } else if(type == 'QR'){
+            qrData.isQrEnabled = flag;
+          }
+
+          var data = {};
+          data.token = $cookies.get("acceleronLunaAdminToken");
+          data.statusPayment = qrData.isPaymentEnabled ? 1 : 0;
+          data.statusMaintain = qrData.isMaintainMode ? 1 : 0;
+          data.statusQr = qrData.isQrEnabled ? 1: 0;
+          data.qrReference = qrData.qrCode;
+          
+          $http({
+            method  : 'POST',
+            url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-updateqrconfig.php',
+            data    : data,
+            headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+           })
+           .then(function(response) {
+                 if(!response.data.status){
+                    showToast("Failed to update : " + response.data.error, "#f44336");
+                 }
+            });
+       }
+
+  })
   ;

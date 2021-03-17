@@ -74,10 +74,11 @@ angular.module('StaffApp', ['ngCookies'])
         return false;
       }
 
-      $scope.removeAgent = function(code){
+      $scope.removeAgent = function(code, role){
         var data = {};
         data.token = $cookies.get("acceleronLunaAdminToken");
         data.code = code;
+        data.role = role;
         $http({
           method  : 'POST',
           url     : 'https://accelerateengine.app/food-engine/apis/removeagent.php',
