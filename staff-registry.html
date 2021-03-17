@@ -16,11 +16,11 @@
    <script src="assets/js/jquery.js"></script>
    <script src="assets/js/angular.min.js"></script>
    <script src="assets/js/angular-cookies.min.js"></script>
-   <script src="controllers/resources.js"></script>
+   <script src="controllers/staff.js"></script>
 
 </head>
 
-    <body class="animated-content" ng-app="ResourcesApp" ng-controller="deliveryagentController" ng-cloak>
+    <body class="animated-content" ng-app="StaffApp" ng-controller="StaffController" ng-cloak>
 
       <header id="topnav" class="navbar navbar-default navbar-fixed-top" role="banner">
          <div class="logo-area">
@@ -89,7 +89,7 @@
                               <li>
                                      <a href="javascript:;"><i class="ti ti-view-grid"></i><span>Tools</span></a>
                                      <ul class="acc-menu">
-                                        <li><a href="resources-deliveryboy.html">Delivery Agents</a></li>
+                                        <li><a href="staff-registry.html">Staff Registry</a></li>
                                         <li><a href="finance-ledger.html">Sales Ledger</a></li>
                                         <li><a href="user-profile.html">Search User</a></li>
                                      </ul>
@@ -122,7 +122,7 @@
 		<div class="col-md-7">
 			<div class="panel panel-teal">
 				<div class="panel-heading">
-					<h2>Delivery Agent</h2>
+					<h2>Registered Staff</h2>
 				</div>
 				<div class="panel-body no-padding">
 					<table class="table m-n">
@@ -130,8 +130,8 @@
 						<thead>
 							<tr>
 								<th>#</th>
-								<th>Mobile No.</th>
-								<th>Name</th>
+								<th>Staff</th>
+								<th>Role</th>
 								<th>Branch</th>
 								<th></th>
 							</tr>
@@ -139,8 +139,11 @@
 						<tbody>
 							<tr ng-repeat="agent in delivery_agent track by $index">
 								<td>{{$index + 1}}</td>
-								<td>{{agent.code}}</td>
-								<td>{{agent.name}}</td>
+								<td>
+                  {{agent.name}}
+                  <tag style="display: block; font-size: 11px; color: #9e9e9e;">{{agent.code}}</tag>
+                </td>
+								<td>{{agent.role}}</td>
 								<td>{{outletCode}}</td>
 								<td><a ng-click="askForDelete(agent)"><i class="fa fa-minus-circle" aria-hidden="true"></i></a></td>
 							</tr>
@@ -154,7 +157,7 @@
 		<div class="col-md-5">
 			<div class="panel panel-bluegray">
 				<div class="panel-heading">
-					<h2>Add Delivery Agent</h2>
+					<h2>Add Staff</h2>
 				</div>
 				<div class="panel-body">
 					<div class="row">
@@ -162,7 +165,7 @@
 							<form class="form-horizontal tabular-form">
 										<div class="form-group">
 											<div class="col-sm-12">
-												<input type="text" ng-model="agentcode" placeholder="Mobile No." class="form-control">
+												<input type="text" ng-model="agentcode" placeholder="Mobile No." class="form-control" maxlength="10">
 											</div>
 										</div>
 										<div class="form-group">
@@ -170,6 +173,14 @@
 												<input type="text" ng-model="agentname" placeholder="Name"  class="form-control">
 											</div>
 										</div>
+                    <div class="form-group">
+                      <div class="col-sm-12">
+                        <select class="form-control" id="agenttype">              
+                           <option value="DELIVERY" selected>Delivery Agent</option>
+                           <option value="CAPTAIN">Captain</option>
+                        </select>
+                      </div>
+                    </div>
 							</form>
 						</div>
 					</div>
@@ -179,7 +190,7 @@
 							<div class="row">
 								<div class="col-sm-8">
 									<button class="btn-primary btn" ng-click="addAgent()">Add</button>
-									<div ng-if="errorflag">The fields cannot be left empty</div>
+									<div ng-if="errorflag" style="color: red; margin: 5px 0">Enter a valid name and mobile number</div>
 								</div>
 							</div>
 				</div>

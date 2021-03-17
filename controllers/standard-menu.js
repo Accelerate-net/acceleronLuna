@@ -8,13 +8,13 @@ angular.module('StandardMenuApp', ['ngCookies'])
   .controller('standardMenuController', function($scope, $http, $interval, $cookies) {
 
     //Check if logged in
-    // if($cookies.get("acceleronLunaAdminToken")){
-    //   $scope.isLoggedIn = true;
-    // }
-    // else{
-    //   $scope.isLoggedIn = false;
-    //   window.location = "adminlogin.html";
-    // }
+    if($cookies.get("acceleronLunaAdminToken")){
+      $scope.isLoggedIn = true;
+    }
+    else{
+      $scope.isLoggedIn = false;
+      window.location = "adminlogin.html";
+    }
 
 
     //Logout function

@@ -15,6 +15,7 @@
    <!-- Controller -->
    <script src="assets/js/jquery.js"></script>
    <script src="assets/js/angular.min.js"></script>
+   <script src="assets/js/moment.min.js"></script>
    <script src="assets/js/angular-cookies.min.js"></script>
    <script src="controllers/smart-orders.js"></script>
    <script src="controllers/login.js"></script>
@@ -88,7 +89,7 @@
                               <li>
                                      <a href="javascript:;"><i class="ti ti-view-grid"></i><span>Tools</span></a>
                                      <ul class="acc-menu">
-                                        <li><a href="resources-deliveryboy.html">Delivery Agents</a></li>
+                                        <li><a href="staff-registry.html">Staff Registry</a></li>
                                         <li><a href="finance-ledger.html">Sales Ledger</a></li>
                                         <li><a href="user-profile.html">Search User</a></li>
                                      </ul>
@@ -148,50 +149,65 @@
                                          <table class="table m-n">
                                            <col width="2%">
                                            <col width="10%">
-                                           <col width="12%">
-                                           <col width="11%">
-                                           <col width="12%">
-                                           <col width="26%">
-                                           <col width="7%">
-                                           <col width="7%">
-                                           <col width="7%">
+                                           <col width="10%">
+                                           <col width="8%">
+                                           <col width="10%">
+                                           <col width="10%">
+                                           <col width="10%">
+                                           <col width="10%">
+                                           <col width="10%">
                                             <thead>
                                               <tr>
                                                  <th>#</th>
-                                                 <th>Order No.</th>
-                                                 <th>Customer</th>
-                                                 <th>Type</th>
                                                  <th>Date</th>
-                                                 <th>Items</th>
-                                                 <th>Value</th>
-                                                 <th>Mode</th>
+                                                 <th>Customer</th>
+                                                 <th>Table</th>
+                                                 <th style="text-align: center;">Orders</th>
+                                                 <th>Captain</th>
+                                                 <th>Bill Amount</th>
+                                                 <th style="text-align: center;">Payment</th>
                                                  <th>Status</th>
                                               </tr>
                                             </thead>
                                             <tbody>
                                               <tr ng-repeat="order in completed_orders track by $index">
                                                  <td scope="row">{{$index + 1}}</td>
+                                                 <td>
+                                                    {{order.date}}<br>
+                                                    <tag ng-if="order.feedback.rating == 5" style="color: #2ecc71"> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 4" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 3" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 2" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 1" style="color: #e74c3c"> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag>
+                                                 </td>
+
+                                                 <td>{{order.guestName}}<br><name style="font-size: 12px">{{order.guestMobile}}</name></td>
+
                                                  <td ng-click="displayOrder(order)">
-                                                 	<a href="#" style="font-weight: bold;">{{order.orderID}}</a><br>
-                                                 	<tag ng-if="order.feedback.rating == 5" style="color: #2ecc71"> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 4" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 3" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 2" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 1" style="color: #e74c3c"> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag>                                                 
+                                                 	<a href="#" class="smartTableBadge" ng-class="getRunningStatusTableBadge(order)">{{order.table}}</a>                                  
                                                  </td>
-                                                 <td>{{order.userID}}<br><name style="font-size: 12px">{{order.userName}}</name></td>                                             
-                                                 <td>
-                                                   <tag ng-if="!order.isTakeaway" style="padding: 2px 4px; color: #7f8c8d; border: 1px solid #7f8c8d">Delivery</tag>
-                                                   <tag ng-if="order.isTakeaway" style="padding: 2px 4px; color: #9b59b6; border: 1px solid #9b59b6">Take Away</tag>
+                                                                                              
+                                                 <td style="text-align: center;">
+                                                   <b style="display: block;">{{order.orderData.length}} Orders</b>
+                                                   <tag ng-if="order.type == 'NEW'" style="padding: 0px 4px; color: #ffffff; font-size: 10px; background: #009688; border-radius: 2px; }">NEW</tag>
+                                                   <tag ng-if="order.type == 'RUNNING'" style="padding: 0px 4px; color: #ffffff; font-size: 10px; background: #ff9800; border-radius: 2px; }">RUNNING</tag>
                                                  </td>
-                                                 <td>{{order.date}}</td>
-                                                 <td><span ng-repeat="item in order.cart.items" style="font-size: 12px">{{item.itemName}} ({{item.qty}}). </span></td>
-                                                 <td><i class="fa fa-inr"></i> {{order.cart.cartTotal+order.cart.cartExtra}}</td>
+
+                                                 <td><b>{{order.stewardName}}</b><br><name style="font-size: 12px">{{order.stewardCode}}</name></td>
+
                                                  <td>
-                                                   <tag ng-if="!order.isPrepaid" style="padding: 2px 4px; color: #FFF; background: #27ae60">Cash</tag>
-                                                   <tag ng-if="order.isPrepaid" style="padding: 2px 4px; color: #FFF; background: #7f8c8d">Prepaid</tag>
+                                                  <tag ng-if="order.orderStatus > 0 && order.orderStatus != 5"><i class="fa fa-inr"></i> {{order.billAmount}}</tag>
+                                                  <tag ng-if="order.orderStatus == 0 || order.orderStatus == 5">-</tag>
+                                                 </td>
+                                                 <td style="text-align: center;">
+                                                  <tag ng-if="order.orderStatus > 0 && order.orderStatus != 5">
+                                                      <tag ng-if="order.paymentMode == 'Online'" style="padding: 2px 4px; color: #FFF; background: #27ae60">Online</tag>
+                                                      <p ng-if="order.paymentMode == 'Online'" style="margin: 5px 0 0 0; text-align: center; color: #9e9e9e;">{{order.paymentReference}}</p>
+                                                      <tag ng-if="order.paymentMode == 'Offline'" style="padding: 2px 4px; color: #FFF; background: #7f8c8d">Offline</tag>
+                                                  </tag>
+                                                  <tag ng-if="order.orderStatus == 0 || order.orderStatus == 5">-</tag>
                                                  </td>
                                                  <td>
-                                                   <tag style="color: #e67e22" ng-if="order.status == 0">Pending</tag>
-                                                   <tag style="color: #3498db" ng-if="order.status == 1">Confirmed</tag>
-                                                   <tag style="color: #16a085" ng-if="order.status == 2">Dispatched</tag>
-                                                   <tag style="color: #e74c3c" ng-if="order.status == 5">Cancelled</tag>
+                                                   <tag style="color: #e67e22; font-weight: bold" ng-if="order.orderStatus == 0">{{getRunningStatusText(order.orderData)}}</tag>
+                                                   <tag style="color: #3498db; font-weight: bold" ng-if="order.orderStatus == 1">Billed</tag>
+                                                   <tag style="color: #16a085; font-weight: bold" ng-if="order.orderStatus == 2">Paid</tag>
+                                                   <tag style="color: #e74c3c; font-weight: bold" ng-if="order.orderStatus == 5">Cancelled</tag>
                                                  </td>
                                               </tr>
                                             </tbody>
@@ -269,22 +285,23 @@
 
 
 
-			   <!-- Displaying ORDER -->
+			                     <!-- Displaying ORDER -->
                            <div class="row" ng-if="isViewingOrder">
                               <div class="col-md-1"></div>
                               <div class="col-md-10">
                                 <div class="panel panel-bluegray">
                                    <div class="panel-heading" style="background: #D7DBDD">
-                                      <h2 ng-if="displayOrderID" style="color: #5D6D7E; font-size: 21px;">
+                                      <h2 style="color: #5D6D7E; font-size: 21px;">
                                          #{{displayOrderID}}
-                                         <tag ng-if="displayOrderContent.isPrepaid" style="font-size: 12px; float: right; margin-left: 10px; padding: 1px 3px; font-weight: bold; border: 1px solid #2980b9; color: #2980b9">PREPAID ORDER</tag>
-                                         <tag ng-if="!displayOrderContent.isPrepaid" style="font-size: 12px; float: right; margin-left: 10px; padding: 1px 3px; font-weight: bold; background: #2ecc71; color: #FFF">CASH ON DELIVERY</tag>
+                                          <tag ng-if="displayOrderContent.orderStatus > 0 && displayOrderContent.orderStatus != 5">
+                                            <tag ng-if="displayOrderContent.paymentMode == 'Offline'" style="font-size: 12px; float: right; margin-left: 10px; padding: 1px 3px; font-weight: bold; border: 1px solid #949494; color: #949494">Offline Payment</tag>
+                                            <tag ng-if="displayOrderContent.paymentMode == 'Online'">
+                                                  <tag style="font-size: 12px; margin-left: 10px; padding: 4px 6px; font-weight: bold; background: #2ecc71; color: #FFF">Online Payment</tag> <tag style="ffont-weight: 300; color: #525252; font-size: 14px; text-transform: initial; padding-left: 20px"><i class="fa fa-credit-card" aria-hidden="true"></i>{{displayOrderContent.paymentReference}}</tag>
+                                            </tag>
+                                          </tag>
                                       </h2>
 
                                       <tag style="float: right">
-                                        <h2 ng-if="displayOrderType" style="margin: 12px 10px 0px 10px; float: left; padding: 2px 4px; font-weight: bold; background: #2980b9; color: #FFF">
-                                          TAKE AWAY ORDER
-                                        </h2>
                                         <h2 style="margin-top: 12px; float: right; padding: 1px 6px; background: #c0392b; color: #FFF" ng-click="cancelDisplay()">
                                           X
                                         </h2>
@@ -293,20 +310,16 @@
                                    <div class="panel-heading" style="background: #F1F2F2">
                                      <div class="row">
                                        <div class="col-sm-12">
-                                         <p ng-if="displayOrderContent.status == 5" style="color: #c0392b; margin: 0px">
+                                         <p ng-if="displayOrderContent.orderStatus == 5" style="color: #c0392b; margin: 0px">
                                            This order was cancelled.
-                                           <date style="float: right">{{displayOrderContent.date}}<platform style="float: right; padding-left: 5px" ng-if="displayOrderContent.platform == 'WEB'">
- <i class="fa fa-desktop" aria-hidden="true"></i></platform><platform style="float: right; padding-left: 5px" ng-if="displayOrderContent.platform == 'MOB'"><i class="fa fa-android" aria-hidden="true"></i></platform><platform style="float: right; padding-left: 5px" ng-if="displayOrderContent.platform == 'IOS'"><i class="fa fa-apple" aria-hidden="true"></i></platform></date>
+                                           <date style="float: right">{{displayOrderContent.date}}</date>
                                          </p>
                                          <p style="color: #5D6D7E; margin: 0px" ng-if="displayOrderContent.status != 5">
-                                           <i class="fa fa-clock-o"></i> Placed at <b>{{displayOrderContent.timePlace}}</b>
-                                           <tag ng-if="displayOrderContent.status > 0"> <i class="fa fa-check-square-o" style="padding-left: 10px"></i>  Confirmed at <b>{{displayOrderContent.timeConfirm}}</b></tag>
-                                           <tag ng-if="!displayOrderType && displayOrderContent.status > 1"> <i class="fa fa-truck" style="padding-left: 10px"></i>  Dispated at <b>{{displayOrderContent.timeDispatch}}</b></tag>
-                                           <tag ng-if="displayOrderType && displayOrderContent.status > 1"> <i class="fa fa-gift" style="padding-left: 10px"></i>  Ready for Pickup at <b>{{displayOrderContent.timeDispatch}}</b></tag>
+                                           <i class="fa fa-clock-o"></i> Placed at <b>{{getFormattedTime(displayOrderContent.orderDate)}}</b>
+                                           <tag ng-if="displayOrderContent.orderStatus > 0"> <i class="fa fa-check-square-o" style="padding-left: 10px"></i>  Last update at <b>{{getFormattedTime(displayOrderContent.updateDate)}}</b></tag>
                                                                                    
-                                           <date style="float: right">{{displayOrderContent.date}}<platform style="float: right; padding-left: 5px" ng-if="displayOrderContent.platform == 'WEB'">
- <i class="fa fa-desktop" aria-hidden="true"></i></platform><platform style="float: right; padding-left: 5px" ng-if="displayOrderContent.platform == 'MOB'"><i class="fa fa-android" aria-hidden="true"></i></platform><platform style="float: right; padding-left: 5px" ng-if="displayOrderContent.platform == 'IOS'"><i class="fa fa-apple" aria-hidden="true"></i></platform></date>
-                                          <rating style="float: right; margin-right: 10px; font-size: 14px;">                                         	 
+                                           <date style="float: right">{{displayOrderContent.date}}</date>
+                                          <rating style="float: right; margin-right: 10px; font-size: 14px;">                      	 
                                          	 <tag ng-if="displayOrderContent.feedback.rating == 5" style="color: #2ecc71"> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i> </tag> <tag ng-if="displayOrderContent.feedback.rating == 4" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="displayOrderContent.feedback.rating == 3" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="displayOrderContent.feedback.rating == 2" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="displayOrderContent.feedback.rating == 1" style="color: #e74c3c"> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag>
                                          </rating>
                                          
@@ -316,89 +329,57 @@
                                      </div>
                                    </div>
                                    <div class="panel-body" ng-if="displayOrderID">
-                                      <div id="earnings" class="mt-sm mb-sm">
-                                         <!-- Order Data -->
-                                         <div class="table-responsive">
-                                            <table class="table">
-                                               <thead>
-                                                  <tr>
-                                                     <th>#</th>
-                                                     <th>Item Name</th>
-                                                     <th>Quantity</th>
-                                                     <th>Unit Price</th>
-                                                     <th>Sub Total</th>
-                                                  </tr>
-                                               </thead>
-                                               <tbody>
-                                                  <tr ng-repeat="item in displayOrderContent.cart.items track by $index">
-                                                     <td align="left">{{$index+1}}</td>
-                                                     <td>{{item.itemName}} <span ng-if="item.isCustom" class="text-warning" style="font-size: 11px;">{{item.variant}}</span></td>
-                                                     <td>{{item.qty}}</td>
-                                                     <td>{{item.itemPrice}}</td>
-                                                     <td>{{item.itemPrice*item.qty}}</td>
-                                                  </tr>
-                                                  
-                                                  <tr>
-                                                     <td colspan="2" style="padding: 1px"></td>
-                                                     <td colspan="2" style="padding: 1px">Sub Total</td>
-                                                     <td style="padding: 1px"><i class="fa fa-inr"></i> {{displayOrderContent.cart.cartTotal + displayOrderContent.cart.cartDiscount}}</td>
-                                                   </tr>
-                                                   <tr>
-                                                     <td colspan="2" style="padding: 1px"></td>
-                                                     <td colspan="2" style="padding: 1px">Parcel Charges</td>
-                                                     <td style="padding: 1px"><i class="fa fa-inr"></i> {{displayOrderContent.cart.cartExtra}}</td>
-                                                   </tr>
-                                                   <tr>
-                                                     <td colspan="2" style="padding: 1px"></td>
-                                                     <td colspan="2" style="padding: 1px">Discounts</td>
-                                                     <td style="padding: 1px"><i class="fa fa-inr"></i> {{displayOrderContent.cart.cartDiscount}}</td>
-                                                   </tr>
-                                                   <tr style="font-size: 110%; font-weight: bold;">
-                                                     <td colspan="2" style="padding: 1px"></td>
-						     <td colspan="2" style="padding: 1px" ng-if="displayOrderContent.isPrepaid">Total Received Amount</td>
-                                                     <td colspan="2" style="padding: 1px" ng-if="!displayOrderContent.isPrepaid && displayOrderContent.status < 2">Total Cash to Collect</td>
-                                                     <td colspan="2" style="padding: 1px" ng-if="!displayOrderContent.isPrepaid && displayOrderContent.status > 1">Total Cash Collected</td>
-                                                     <td style="padding: 1px"><i class="fa fa-inr"></i> {{displayOrderContent.amountPaid}}</td>
-                                                   </tr>
-                                                   
-                                               </tbody>
-                                            </table>
-                                         </div>
-                                      </div>
+                                      
                                       <div class="row">
-                                         <div class="col-md-6">
-                                            <div class="alert" style="background: none; border: 1px solid #bdc3c7; color: #34495e" ng-if="!displayOrderType">
-                                               <h3 style="font-weight: 200; font-size: 18px">DELIVERY ADDRESS</h3>
-                                               <hr>
-                                               <p>{{displayOrderContent.deliveryAddress.name}}<br>
-                                                  {{displayOrderContent.deliveryAddress.flatNo}}, {{displayOrderContent.deliveryAddress.flatName}}<br>
-                                                  {{displayOrderContent.deliveryAddress.area}}<br>
-                                                  {{displayOrderContent.deliveryAddress.landmark}}<br>
-                                                  Mob. <strong>{{displayOrderContent.deliveryAddress.contact}}</strong>
-                                               </p>
-                                            </div>
-                                            <div class="alert" style="background: none; border: 1px solid #bdc3c7; color: #34495e" ng-if="displayOrderType">
-                                               <h3 style="font-weight: 200; font-size: 18px">CUSTOMER DETAILS</h3>
-                                               <hr>
-                                               <p style="font-size: 21px">{{displayOrderContent.userName}}<br>
-                                                  Mob. <strong>{{displayOrderContent.userID}}</strong>
-                                               </p>
-                                            </div>
+                                         <div class="col-md-8">
+                                              <div id="earnings" class="mt-sm mb-sm" style="margin: 0 !important">
+                                                 <!-- Order Data -->
+                                                 <div class="table-responsive">
+                                                    <table class="table">
+                                                       <col width="20%">
+                                                       <col width="10%">
+                                                       <col width="70%">
+                                                       <thead>
+                                                          <tr style="background: #3f51b5; color: #FFF;">
+                                                             <th>Sl No.</th>
+                                                             <th>Quantity</th>
+                                                             <th>Item Name</th>
+                                                          </tr>
+                                                       </thead>
+                                                        <tbody ng-repeat="splitOrder in displayOrderContent.orderData track by $index">
+                                                          <tr style="background: #3f51b5; height: 20px !important; padding: 0; text-align: center; color: #FFF;">
+                                                              <td colspan="3" class="viewSmartOrderCol" ng-class="getSplitOrderStatusHeader(splitOrder)">{{getSubOrderHeading($index + 1, splitOrder)}}
+                                                                <tag ng-if="splitOrder.comments != ''" ng-click="openSplitOrderComments(splitOrder.comments)" style="width: 40px; display: inline-block; text-align: center; cursor: pointer;"><i class="fa fa-commenting-o"></i></tag>
+                                                                <tag style="float: right; margin-right: 15px">#{{splitOrder.subOrderId}}
+                                                                  <i class="fa fa-circle" style="font-size: 50%; padding: 0 8px; position: relative; top: -2px;"></i>
+                                                                  <i class="fa fa-clock-o" aria-hidden="true"></i> {{getFormattedTime(splitOrder.orderDate)}}
+                                                                      <tag ng-if="splitOrder.status == 1">
+                                                                      <i class="fa fa-check-square-o" aria-hidden="true" style="margin-left: 15px"></i> {{getFormattedTime(splitOrder.updateDate)}}
+                                                                      </tag>
+                                                                </tag>
+                                                              </td>
+                                                          </tr>
+                                                          <tr ng-repeat="item in splitOrder.cart track by $index">
+                                                             <td align="left">{{$index + 1}}</td>
+                                                             <td style="text-align: right">{{item.qty}} x</td>
+                                                             <td>{{item.name}} <span ng-if="item.variant != ''" class="text-warning" style="font-size: 11px;">{{item.variant}}</span></td>
+                                                          </tr>
+                                                       </tbody>
+                                                    </table>
+                                                 </div>
+                                              </div>
                                          </div>
-                                         <!-- PENDING ORDER CASE -->
-                                         <div class="col-md-6" ng-if="displayOrderContent.comments != ''">
-                                            <div class="alert" style="background: none; border: 2px solid #3498db; color: #3498db">
-                                               <h3 style="color: #3498db; font-weight: 200; font-size: 18px">COMMENTS TO CHEF</h3>
-                                               <hr>
-                                               <p style="font-size: 16px;">{{displayOrderContent.comments}}</p>
+                                         
+                                         <div class="col-md-4" ng-if="isViewingSplitOrderCommentsText">
+                                            <div class="alert" style="background: none; border: 1px solid #3498db; color: #3498db; padding: 10px; min-height: 150px;">
+                                               <h3 style="color: #3498db; font-weight: 200; font-size: 14px; margin: 0">Comments from Guest</h3>
+                                               <hr style="margin: 5px 0 10px 0">
+                                               <p style="font-size: 16px;">{{viewingSplitOrderCommentsText}}</p>
                                             </div>
                                          </div>
                                       </div>
-                                      <div class="row">
-                                         <div class="col-md-12">
-                                            <tag ng-if="displayOrderContent.status == 2 && !displayOrderType" style="font-size: 16px; margin-left: 10px; color: #2ecc71;">Order was dispatched through <b>{{displayOrderContent.agentName}}</b> ({{displayOrderContent.agentCode}}) at {{displayOrderContent.timeDispatch}}</tag>
-                                         </div>
-                                      </div>
+
+
                                    </div>
                                 </div>
                               </div>

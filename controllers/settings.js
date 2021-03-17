@@ -224,6 +224,7 @@ angular.module('SettingsApp', ['ngCookies'])
               		$scope.reservations_length = response.data.reservationsCount;
               		$scope.pending_orders_length = response.data.ordersCount;
               		$scope.helprequests_length = response.data.helpCount;
+              		$scope.smart_orders_length = response.data.smartOrdersCount;
               	}
               	else{
               		$scope.reservations_length = 0;
@@ -244,6 +245,7 @@ angular.module('SettingsApp', ['ngCookies'])
               		$scope.reservations_length = response.data.reservationsCount;
               		$scope.pending_orders_length = response.data.ordersCount;
               		$scope.helprequests_length = response.data.helpCount;
+              		$scope.smart_orders_length = response.data.smartOrdersCount;
               	}
               	else{
               		$scope.reservations_length = 0;

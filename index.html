@@ -17,12 +17,12 @@
    <script src="assets/js/moment.min.js"></script>
    <script src="assets/js/angular.min.js"></script>
    <script src="assets/js/angular-cookies.min.js"></script>
-   <script src="controllers/smartorders.js"></script>
+   <script src="controllers/smart-orders.js"></script>
    <script src="controllers/login.js"></script>
 
 </head>
 
-   <body class="" ng-app="SmartOrdersApp" ng-controller="smartOrdersController" ng-cloak>
+   <body class="" ng-app="SmartOrdersApp" ng-controller="SmartOrdersController" ng-cloak>
     
      <header id="topnav" class="navbar navbar-default navbar-fixed-top" role="banner">
         <div class="logo-area">
@@ -90,7 +90,7 @@
                               <li>
                                      <a href="javascript:;"><i class="ti ti-view-grid"></i><span>Tools</span></a>
                                      <ul class="acc-menu">
-                                        <li><a href="resources-deliveryboy.html">Delivery Agents</a></li>
+                                        <li><a href="staff-registry.html">Staff Registry</a></li>
                                         <li><a href="finance-ledger.html">Sales Ledger</a></li>
                                         <li><a href="user-profile.html">Search User</a></li>
                                      </ul>
@@ -200,8 +200,8 @@
                       </div>
                 </div>                                          
                 <div class="modal-footer punchOrderFooter">                                    
-                  <button type="button" class="btn btn-default punchOrderReject" ng-click="punchOrderReject(currentTableData, individualOrder)">Reject</button>
-                  <button type="button" class="btn btn-success punchOrderAccept" ng-click="punchOrderAccept(currentTableData, individualOrder)">Accept Order</button>
+                  <button type="button" class="btn btn-default punchOrderReject" style="background: #f44336 !important; color: #FFF;" ng-click="punchOrderReject(currentTableData, individualOrder)">Reject</button>
+                  <button type="button" class="btn btn-success punchOrderAccept" style="background: #4caf4f !important;" ng-click="punchOrderAccept(currentTableData, individualOrder)">Accept Order</button>
                 </div>
               </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -213,10 +213,10 @@
             <div class="modal-dialog">
               <div class="modal-content"> 
                 <div class="modal-body" style="padding: 50px; background: #42465d;"> 
-                  <h1><tag class="table">Table 1</tag><tag class="service">Calling Steward</tag></h1>
+                  <h1><tag class="table">Table {{ServiceRequestModalContent.table}}</tag><tag class="service">{{getServiceNameFromKey(ServiceRequestModalContent.activeServiceRequest)}}</tag></h1>
                 </div>             
                 <div class="modal-footer punchOrderFooter">      
-                  <button type="button" class="btn btn-success punchOrderAccept" style="width: 100% !important" ng-click="punchOrderAccept(currentTableData, individualOrder)">Acknowledge</button>
+                  <button type="button" class="btn btn-success punchOrderAccept" style="width: 100% !important" ng-click="acknowledgeServiceRequest(ServiceRequestModalContent)">Acknowledge</button>
                 </div>
               </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -277,6 +277,8 @@
             </div><!-- /.modal-dialog -->
           </div><!-- /.modal -->    
           
+
+          <div id="infobar"></div>
 
          <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script> 
       <script type="text/javascript" src="assets/js/jquery-1.10.2.min.js"></script> 							<!-- Load jQuery -->

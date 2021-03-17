@@ -4,6 +4,544 @@ angular.module('SmartOrdersApp', ['ngCookies'])
     $qProvider.errorOnUnhandledRejections(false);
 }])
 
+.controller('SmartOrdersController', function($scope, $http, $interval, $cookies) {
+
+const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F7Wg6G8g0PY2zmkff5rCh%2BPGETDqicga%2B2XyW9hsC3qlAOG0OrAJwvjTCC8%3D";
+
+
+
+      //Check if logged in
+      if($cookies.get("acceleronLunaAdminToken")){
+        $scope.isLoggedIn = true;
+      }
+      else{
+        $scope.isLoggedIn = false;
+        window.location = "adminlogin.html";
+      }
+
+
+      /* Loading Animation */
+      var toastShowingInterval;
+      function showToast(message, color){
+          clearInterval(toastShowingInterval);
+          var x = document.getElementById("infobar");
+          x.style.background = color && color != '' ? color : '#ff9607';
+          x.innerHTML = message ? '<tag id="infotext">'+message+'</tag>' : '<tag id="infotext">Loading...</tag>';
+          x.className = "show"; 
+          x.classList.add('blink_me');
+      }
+      function updateToastAndClose(message, color){
+          clearInterval(toastShowingInterval);
+          var x = document.getElementById("infobar");
+          x.style.background = color;
+          x.innerHTML = message ? message : 'Completing...';
+          x.classList.remove('blink_me');
+          toastShowingInterval = setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+      }
+      function hideToast(){
+        clearInterval(toastShowingInterval);
+        var x = document.getElementById("infobar");
+        toastShowingInterval = setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+      }
+
+
+
+
+
+
+      $scope.isLoggedIn = true;
+
+      //Logout function
+      $scope.logoutNow = function(){
+        if($cookies.get("acceleronLunaAdminToken")){
+          $cookies.remove("acceleronLunaAdminToken");
+          window.location = "adminlogin.html";
+        }
+      }
+
+      $scope.outletCode = localStorage.getItem("branch");
+
+      $scope.tablesList = [];
+      $scope.isTablesLoaded = false;
+      $scope.loadTables = function(){
+          var data = {};
+          data.token = TOKEN_FOR_TESTING;//$cookies.get("acceleronLunaAdminToken");
+          $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+          $http({
+            method  : 'POST',
+            url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-tablestatus.php',
+            data    : data,
+            headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+          })
+          .then(function(response) {
+             $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+             if(response.data.status){
+               $scope.tablesList = response.data.data;
+               $scope.isTablesLoaded = true;
+             }
+             else{
+               $scope.isTablesLoaded = false;
+             }
+          });
+      }
+      $scope.loadTables();
+
+      $scope.individualOrder = {};
+
+      $scope.acknowledgeServiceRequest = function(table){
+        if(table.activeServiceRequest){
+              var data = {};
+              data.token = TOKEN_FOR_TESTING;//$cookies.get("acceleronLunaAdminToken");
+              data.requestId = table.activeServiceRequestId;
+              $http({
+                method  : 'POST',
+                url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-acknowledgerequest.php',
+                data    : data,
+                headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+              })
+              .then(function(response) {
+                 $scope.loadTables();
+                 $('#serviceRequestModal').modal('hide');
+              });
+        }
+      }
+
+      $scope.showServiceRequestModal = function(table){
+        $scope.ServiceRequestModalContent = table;
+        $('#serviceRequestModal').modal('show');
+      }
+
+
+      $scope.openTable = function(table){
+        console.log(table);
+        if(table.activeServiceRequest){
+          //Acknowledge service
+          $scope.showServiceRequestModal(table);
+          return;
+        }
+        
+        $scope.currentTableData = table;
+
+        var isTableOccuppied = !$scope.currentTableData.isTableFree;
+        var tableOrderStatus = $scope.currentTableData.orderStatus;
+
+        if(isTableOccuppied){
+            if(table.hasNewOrder){ //There is a new order on the table --> Punch
+                var data = {};
+                data.token = TOKEN_FOR_TESTING;//$cookies.get("acceleronLunaAdminToken");
+                data.masterorder = table.masterOrderId;
+                $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+                $http({
+                  method  : 'POST',
+                  url     : 'https://accelerateengine.app/smart-menu/apis/fetchorder.php',
+                  data    : data,
+                  headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+                })
+                .then(function(response) {
+                  console.log(response)
+                   $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+                   if(response.data.status){
+                     $scope.individualOrder = response.data.data;
+                     var cart = $scope.individualOrder.cart;
+                     for(var i = 0; i < cart.length; i++){
+                        cart[i].isAvailable = true;
+                     }
+
+                     $scope.individualOrder.cart = cart;
+
+                     $('#punchOrderModal').modal('show');
+                   }
+                   else{
+                     alert('Failed to load the order - ' + response.data.error);
+                   }
+                });
+            }
+            else{
+                  var hasActiveRequest = table.activeServiceRequest != "" ? true : false;
+                  if(hasActiveRequest){ //There is active service request on the table --> Acknowledge
+
+                  }
+                  else{
+                        if(tableOrderStatus == 0){ //show VIEW ITEMS / GENERATE BILL options
+                          $scope.showOptions(['VIEW_ORDERS', 'GENERATE_BILL']);
+                          //$('#generateBillModal').modal('show');
+                        }
+                        else if(tableOrderStatus == 1){ //already billed - waiting for settlement (orange tile) - show VIEW ITEMS / SETTLE BILL options
+                          $scope.showOptions(['SETTLE_BILL', 'VIEW_ORDERS']);
+                        }
+                        else if(tableOrderStatus == 2){ //bill paid - show Confirm and clear mapping (remove table - qr mapping) 
+                          $scope.showOptions(['CONFIRM_PAYMENT']);
+                        }
+                  }
+            }
+        }
+
+      }
+
+      $scope.getOrderCount = function(number){
+        if(number == 1){
+          return "2nd";
+        }
+        else if(number == 2){
+          return "3rd";
+        }
+        else if(number > 2){
+          return (number+1) + "th";
+        }
+      }
+
+
+      $scope.showOptions = function(optionsList){
+        
+        $('#tableOptionsModal').modal('show');
+        for(var i = 0; i < optionsList.length; i++){
+
+        }
+      }
+
+
+      $scope.changeItemAvailability = function(item){
+         var cart = $scope.individualOrder.cart;
+         for(var i = 0; i < cart.length; i++){
+            if(cart[i].code == item.code && cart[i].variant == item.variant){
+              cart[i].isAvailable = !cart[i].isAvailable;
+            }
+         }
+         $scope.individualOrder.cart = cart;
+      }
+
+      $scope.generateBillForTable = function(tableData){
+              
+              console.log('tableData', tableData);
+
+              var data = {};
+              data.token = TOKEN_FOR_TESTING; //$cookies.get("acceleronLunaAdminToken");
+              data.masterorder = 59;
+              data.systemBillNumber = tableData.systemBillNumber;
+              data.totalBillAmount = tableData.billAmount;
+              $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+              $http({
+                method  : 'POST',
+                url     : 'https://accelerateengine.app/smart-menu/apis/generateinvoice.php',
+                data    : data,
+                headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+              })
+              .then(function(response) {
+                console.log(response)
+                 $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+                 if(response.data.status){
+                   $('#generateBillModal').modal('hide');
+                 }
+                 else{
+                   alert('Failed to generate bill - ' + response.data.error);
+                 }
+              });
+
+
+
+      }
+
+
+      $scope.punchOrderAccept = function(currentTableData, individualOrder){
+        let cart = individualOrder.cart;
+        let filteredCart = [];
+        let i = 0;
+        let isCartChanged = 0;
+        while(i < cart.length){
+            if(cart[i].isAvailable){
+                filteredCart.push(cart[i]);
+            }
+            else {
+                isCartChanged = 1;
+            }
+            i++;
+        }
+
+        if(filteredCart.length == 0){
+           showToast("Warning: You have marked all items unavailable, so please REJECT the order.", "#ff9800");
+           return;
+        }
+        else {
+                    var data = {
+                        masterOrderId: currentTableData.masterOrderId,
+                        subOrderId: individualOrder.orderId,
+                        cartChanged: isCartChanged,
+                        cartFinal: filteredCart
+                    }
+
+                    $http({
+                        method: 'POST',
+                        url: 'https://accelerateengine.app/smart-menu/apis/superadmin-acceptorder.php',
+                        data: data,
+                        timeout: 10000
+                    })
+                    .then(function(data) {
+                        if(data.status){
+                            //Push to local server
+                            $scope.sendOrderToServer(currentTableData, individualOrder);
+                            $('#punchOrderModal').modal('hide');
+                            $scope.loadTables();
+                        }
+                        else {
+                            showToast("Error in accepting the order", "#f44336");
+                        }
+                    })
+        }
+
+      }
+
+
+      $scope.sendOrderToServer = function(currentTableData, individualOrder){
+                var COMMON_IP_ADDRESS = "http://127.0.0.1:5984/";
+
+                var table = currentTableData.table;
+                if(table == ''){  
+                    showToast("Table missing", "#f44336");
+                    return '';
+                }
+
+                isTableFreeCheck(table);
+
+                function isTableFreeCheck(table_req){
+                    $http({
+                        method: 'GET',
+                        url: COMMON_IP_ADDRESS+'/accelerate_tables/_design/filter-tables/_view/filterbyname?startkey=["'+table_req+'"]&endkey=["'+table_req+'"]',
+                        timeout: 10000
+                    })
+                    .then(function(response) {
+                        let data = response.data;
+                        console.log(data)
+                        if(data.rows.length >= 1){
+                                var thisTable = data.rows[0].value;
+                                if(thisTable.status != 0){
+                                    alert("Order Already Exists - The table "+table_req+" is not free. Refresh the table status or check in Live Orders on the System.");
+                                    var confirmPopup = $ionicPopup.confirm({
+                                        cssClass: 'popup-clear confirm-alert-alternate',
+                                        title: 'Order Already Exists',
+                                        template: '<p style="color: #4e5b6a; padding: 0 10px 10px 10px; margin: 0; font-size: 15px; font-weight: 400;"></p>'
+                                    });
+                                }
+                                else{
+                                    sendKOTToServerAfterProcess();
+                                }
+                        }
+                        else{
+                          showToast("Error: Unable to read Table info.", "#f44336");
+                        }
+                    }) 
+                }
+
+
+                function sendKOTToServerAfterProcess(){
+                        var tapOrderMetaData = {
+                            "source": "SMART",
+                            "type": "DINE"
+                        }
+
+                        var orderData = {
+                              "_id": 'SMART_'+currentTableData.masterOrderId+'_'+individualOrder.orderId,
+                              "tapsSource": tapOrderMetaData,
+                              "KOTNumber": "",
+                              "orderDetails": {
+                                "mode": "",
+                                "modeType": "",
+                                "reference": individualOrder.orderId,
+                                "isOnline": true
+                              },
+                              "table": table,
+                              "customerName": currentTableData.guestName,
+                              "customerMobile": currentTableData.guestMobile,
+                              "guestCount": 0,
+                              "machineName": "Luna",
+                              "sessionName": "",
+                              "stewardName": currentTableData.stewardName,
+                              "stewardCode": currentTableData.stewardCode,
+                              "date": "",
+                              "timePunch": "",
+                              "timeKOT": "",
+                              "timeBill": "",
+                              "timeSettle": "",
+                              "cart": individualOrder.cart,
+                              "specialRemarks": individualOrder.comments,
+                              "allergyInfo": "",
+                              "extras": [],
+                              "discount": {},
+                              "customExtras": {}
+                        }
+
+
+                          //post to server
+                          var http = new XMLHttpRequest();   
+                          var url = COMMON_IP_ADDRESS+'accelerate_third_party_orders';
+                          http.open("POST", url);
+                          http.setRequestHeader("Content-Type", "application/json");
+
+                          http.onreadystatechange = function() {
+                              let errorString = "";
+                              if(http.status == 201) {
+                                  showToast("Successfully posted the order", "#4caf4f");
+                              }
+                              else if(http.status == 409){
+                                  errorString = "Aborted! This Order was punched already";
+                              }
+                              else if(http.status == 404){
+                                  errorString = "Local Server Error: Connection failed";
+                              }
+                              else{
+                                  errorString = "Error: Punching order failed";
+                              }
+
+                              if(errorString != ""){
+                                  showToast(errorString, "#f44336")
+                              }
+                          }
+
+                          http.send(JSON.stringify(orderData));
+
+                }          
+      }
+
+      $scope.punchOrderReject = function(currentTableData, individualOrder){
+        
+      }
+
+      $scope.getOrderTime = function(time, format){
+        if(format == 'PAST'){
+          return moment(time).fromNow();
+        }
+        if(format == 'ABSOLUTE'){
+          return moment(time).format('LT');
+        }
+      }
+
+      $scope.getTileClasses = function(table){
+
+        let tileColor = "free";
+
+        if(table.isTableFree){
+          tileColor = "free";
+        }
+
+        switch(table.orderStatus){
+          case "0":{
+            tileColor = "active";
+            break;
+          }
+          case "1":{
+            tileColor = "billed";
+            break;
+          }
+          case "2":{
+            tileColor = "settled";
+            break;
+          }
+          default:{
+            tileColor = "free";
+          }
+        }
+
+        if((table.hasNewOrder) && (tileColor == "free" || tileColor == "active")){
+          tileColor = "new";
+        }
+
+        var isServiceRequest = table.activeServiceRequest != "" ? true : false;
+        if(isServiceRequest){
+          tileColor = tileColor + " serviceWarning";
+        }
+
+        return tileColor;
+      }
+
+      $scope.getTileText = function(table){
+
+        if(table.hasNewOrder){
+          return "New";
+        }
+
+        if(table.isTableFree){
+          return "Free";
+        }
+
+        switch(table.orderStatus){
+          case "0":{
+            if(table.stewardName && table.stewardName != ""){
+              return table.stewardName;
+            }
+            return "Running";
+          }
+          case "1":{
+            if(table.systemBillNumber && table.systemBillNumber != ""){
+              return "Billed #" + table.systemBillNumber;
+            }
+            return "Billed";
+          }
+          case "2":{
+            if(table.systemBillNumber && table.systemBillNumber != ""){
+              return "Billed #" + table.systemBillNumber;
+            }
+            return "Billed";
+          }
+          default:{
+            return "";
+          }
+        }
+      }
+
+
+      $scope.getServiceWarningIcon = function(table){
+        var requestType = table.activeServiceRequest;
+        switch(requestType){
+          case "CALL_REQUEST_BILL":{
+            return "fa-file-text-o";
+          }
+          case "CALL_CALL_STEWARD":{
+            return "fa-user-o";
+          }
+          case "CALL_SERVE_FAST":{
+            return "fa-bolt";
+          }
+          default:{
+            return "fa-paper-o";
+          }
+        }
+      }
+
+      $scope.getServiceNameFromKey = function(requestType){
+        switch(requestType){
+          case "CALL_REQUEST_BILL":{
+            return "Needs Bill";
+          }
+          case "CALL_CALL_STEWARD":{
+            return "Calling Steward";
+          }
+          case "CALL_SERVE_FAST":{
+            return "Faster Service";
+          }
+          default:{
+            return "Calling Steward";
+          }
+        }
+      }
+
+      $scope.getServiceWarningLabel = function(table){
+        var requestType = table.activeServiceRequest;
+        switch(requestType){
+          case "CALL_REQUEST_BILL":{
+            return "Take Bill";
+          }
+          case "CALL_CALL_STEWARD":{
+            return "Attend";
+          }
+          case "CALL_SERVE_FAST":{
+            return "Serve Fast";
+          }
+          default:{
+            return "Attend";
+          }
+        }
+      }
+
+  })
 
 .controller('failedOrdersController', function($scope, $http, $interval, $cookies) {
 
@@ -224,6 +762,7 @@ angular.module('SmartOrdersApp', ['ngCookies'])
               		$scope.reservations_length = response.data.reservationsCount;
               		$scope.pending_orders_length = response.data.ordersCount;
               		$scope.helprequests_length = response.data.helpCount;
+              		$scope.smart_orders_length = response.data.smartOrdersCount;
               	}
               	else{
               		$scope.reservations_length = 0;
@@ -244,6 +783,7 @@ angular.module('SmartOrdersApp', ['ngCookies'])
               		$scope.reservations_length = response.data.reservationsCount;
               		$scope.pending_orders_length = response.data.ordersCount;
               		$scope.helprequests_length = response.data.helpCount;
+              		$scope.smart_orders_length = response.data.smartOrdersCount;
               	}
               	else{
               		$scope.reservations_length = 0;
@@ -303,6 +843,8 @@ angular.module('SmartOrdersApp', ['ngCookies'])
       $scope.searchDate = false;
       $scope.searchMobile = false;
       $scope.searchOrder = false;
+      $scope.stewardCode = false;
+      $scope.tableNumber = false;
 
       //Search Key
       $scope.isSearched = false;
@@ -319,23 +861,23 @@ angular.module('SmartOrdersApp', ['ngCookies'])
       var yyyy = today.getFullYear();
       if(dd<10){ dd='0'+dd;}
       if(mm<10){ mm='0'+mm;}
-      var today = dd+''+mm+''+yyyy;
+      var today = yyyy+'-'+mm+'-'+dd;
 
       var data = {};
-      data.token = $cookies.get("acceleronLunaAdminToken");
-      data.status = 2;
+      data.token ="QJz9u+Dw/YD5mr1wNKxX9HY+N1LMiMEQ5s7M6WLi0Q8p5ybXRmWkl0sYE7tKoBzEvUNvHu1BoS+jeowv5H8T6A=="//$cookies.get("acceleronLunaAdminToken");
+      data.status = 0;
       data.key = today;
       
 
       $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
       $http({
         method  : 'POST',
-        url     : 'https://accelerateengine.app/food-engine/apis/filterorders.php',
+        url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-fetchordersummary.php',
         data    : data,
         headers : {'Content-Type': 'application/x-www-form-urlencoded'}
        })
        .then(function(response) {
-	 $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+	       $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
          if(response.data.status){
            $scope.isMoreLeft = false; //Showing all orders anyways.
            $scope.isOrdersFound = true;
@@ -446,15 +988,86 @@ angular.module('SmartOrdersApp', ['ngCookies'])
 
       //To display order details
       $scope.displayOrder = function(order){
-      	
-      	console.log(order.orderID)
-      
-        $scope.displayOrderID = order.orderID;
+        $scope.displayOrderID = order.masterOrderId;
         $scope.displayOrderContent = order;
-        $scope.user_contact = order.address;
-        $scope.displayOrderType = order.isTakeaway;
-
         $scope.isViewingOrder = true;
+      }
+
+      $scope.getSplitOrderStatusHeader = function(splitOrder){
+        if(splitOrder.status == 0){
+          return "greenSplitHeader";
+        } else if(splitOrder.status == 1){
+          return "";
+        } else if(splitOrder.status == 5){
+          return "redSplitHeader";
+        }
+      }
+
+      $scope.getSubOrderHeading = function(rank, splitOrder){
+        let text = "";
+        if(splitOrder.status == 0){
+          text = "- Pending";
+        } else if(splitOrder.status == 1){
+          text = "- Accepeted";
+        } else if(splitOrder.status == 5){
+          text = "- Rejected";
+        }
+
+
+        if(rank == 1){
+          return "First Order " + text;
+        } else if(rank == 2){
+          return "Second Order " + text;
+        } else if(rank == 3){
+          return "Third Order " + text;
+        } else if(rank >= 4){
+          return rank + "th Order " + text;
+        }
+      }
+
+      $scope.getFormattedTime = function(date){
+        return moment(date, "yyyy-mm-dd hh:mm:ss").format('hh:mm a');
+      }
+
+      $scope.isViewingSplitOrderCommentsText = false;
+      $scope.viewingSplitOrderCommentsText = "";
+      $scope.openSplitOrderComments = function(text){
+        if(text == ""){
+          return;
+        }
+        $scope.isViewingSplitOrderCommentsText = true;
+        $scope.viewingSplitOrderCommentsText = text;
+      }
+
+      $scope.getRunningStatusText = function(orderData){
+        var i = 0;
+        while(i < orderData.length){
+          if(orderData[i].status != 0){
+            return "Running"
+          }
+          i++
+        }
+        return "Pending"
+      }
+
+      $scope.getRunningStatusTableBadge = function(order){
+        if(order.orderStatus == 2){ //Paid
+          return "greyTableBadge";
+        } else if(order.orderStatus == 1){ //Billed
+          return "blueTableBadge";
+        } else if(order.orderStatus == 0){ //Pending
+          var i = 0;
+          let orderData = order.orderData;
+          while(i < orderData.length){
+            if(orderData[i].status != 0){
+              return "orangeTableBadge"; //Some pending
+            }
+            i++
+          }
+          return "greenTableBadge"; // All pending
+        } else if(order.orderStatus == 5){ //Rejected
+          return "redTableBadge";
+        }
       }
 
       $scope.cancelDisplay = function(){
@@ -475,6 +1088,7 @@ angular.module('SmartOrdersApp', ['ngCookies'])
               		$scope.reservations_length = response.data.reservationsCount;
               		$scope.pending_orders_length = response.data.ordersCount;
               		$scope.helprequests_length = response.data.helpCount;
+              		$scope.smart_orders_length = response.data.smartOrdersCount;
               	}
               	else{
               		$scope.reservations_length = 0;
@@ -495,6 +1109,7 @@ angular.module('SmartOrdersApp', ['ngCookies'])
               		$scope.reservations_length = response.data.reservationsCount;
               		$scope.pending_orders_length = response.data.ordersCount;
               		$scope.helprequests_length = response.data.helpCount;
+              		$scope.smart_orders_length = response.data.smartOrdersCount;
               	}
               	else{
               		$scope.reservations_length = 0;
@@ -921,6 +1536,7 @@ angular.module('SmartOrdersApp', ['ngCookies'])
          	if(response.data.status){
               		$scope.reservations_length = response.data.reservationsCount;
               		$scope.helprequests_length = response.data.helpCount;
+              		$scope.smart_orders_length = response.data.smartOrdersCount;
               	}
               	else{
               		$scope.reservations_length = 0;
@@ -939,6 +1555,7 @@ angular.module('SmartOrdersApp', ['ngCookies'])
                 if(response.data.status){
               		$scope.reservations_length = response.data.reservationsCount;
               		$scope.helprequests_length = response.data.helpCount;
+              		$scope.smart_orders_length = response.data.smartOrdersCount;
               	}
               	else{
               		$scope.reservations_length = 0;
