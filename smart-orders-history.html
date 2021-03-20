@@ -140,10 +140,10 @@
                                    <div class="panel-heading">
                                       <h2>{{filterTitle}}</h2>
                                    </div>
-                                   <div class="panel-body">     
-                                     <div id="vegaPanelBodyLoader"></div>                               
-                                     <div class="row" ng-if="!isOrdersFound" style="padding-top: 30px">                                     
-                                       <p style="font-size:21px; text-align: center; color: #7f8c8d">{{resultMessage}}</p>
+                                   <div class="panel-body">                            
+                                     <div class="row">                                     
+                                       <p ng-if="isOrderSummaryLoaded && !isOrdersFound" style="padding-top: 30px; font-size:21px; text-align: center; color: #7f8c8d">{{resultMessage}}</p>
+                                       <p ng-if="!isOrderSummaryLoaded" style="padding-top: 30px; font-size:21px; text-align: center; color: #7f8c8d">LOADING</p>
                                      </div>
                                       <div class="table-responsive" ng-if="isOrdersFound">                                      	 
                                          <table class="table m-n">
@@ -162,17 +162,17 @@
                                                  <th>Date</th>
                                                  <th>Customer</th>
                                                  <th>Table</th>
-                                                 <th style="text-align: center;">Orders</th>
+                                                 <th>Orders</th>
                                                  <th>Captain</th>
                                                  <th>Bill Amount</th>
                                                  <th style="text-align: center;">Payment</th>
-                                                 <th>Status</th>
+                                                 <th>Table Status</th>
                                               </tr>
                                             </thead>
                                             <tbody>
                                               <tr ng-repeat="order in completed_orders track by $index">
-                                                 <td scope="row">{{$index + 1}}</td>
-                                                 <td>
+                                                 <td scope="row" class="verticalCell">{{$index + 1}}</td>
+                                                 <td class="verticalCell">
                                                     {{order.date}}<br>
                                                     <tag ng-if="order.feedback.rating == 5" style="color: #2ecc71"> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 4" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 3" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 2" style="color: #cddc39"> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag> <tag ng-if="order.feedback.rating == 1" style="color: #e74c3c"> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> </tag>
                                                  </td>
@@ -180,34 +180,38 @@
                                                  <td>{{order.guestName}}<br><name style="font-size: 12px">{{order.guestMobile}}</name></td>
 
                                                  <td ng-click="displayOrder(order)">
-                                                 	<a href="#" class="smartTableBadge" ng-class="getRunningStatusTableBadge(order)">{{order.table}}</a>                                  
+                                                 	<a href="#" class="smartTableBadge" ng-class="getRunningStatusTableBadge(order)">{{order.table}}
+                                                    <tag class="completedTickMark"><i class="fa fa-check-circle"></i></tag>
+                                                  </a>                                  
                                                  </td>
                                                                                               
-                                                 <td style="text-align: center;">
-                                                   <b style="display: block;">{{order.orderData.length}} Orders</b>
-                                                   <tag ng-if="order.type == 'NEW'" style="padding: 0px 4px; color: #ffffff; font-size: 10px; background: #009688; border-radius: 2px; }">NEW</tag>
-                                                   <tag ng-if="order.type == 'RUNNING'" style="padding: 0px 4px; color: #ffffff; font-size: 10px; background: #ff9800; border-radius: 2px; }">RUNNING</tag>
+                                                 <td class="verticalCell">
+                                                   {{order.orderData.length}} Orders
                                                  </td>
 
-                                                 <td><b>{{order.stewardName}}</b><br><name style="font-size: 12px">{{order.stewardCode}}</name></td>
+                                                 <td class="verticalCell">
+                                                   <tag ng-if="isCaptainDetailsFound(order)"><b>{{order.stewardName}}</b><br><name style="font-size: 12px">{{order.stewardCode}}</name></tag>
+                                                   <tag style="color: #cfcfcf" ng-if="!isCaptainDetailsFound(order)"><i>Not Assigned</i></tag>
+                                                 </td>
 
-                                                 <td>
-                                                  <tag ng-if="order.orderStatus > 0 && order.orderStatus != 5"><i class="fa fa-inr"></i> {{order.billAmount}}</tag>
+                                                 <td class="verticalCell">
+                                                  <tag ng-if="order.orderStatus > 0 && order.orderStatus != 5"><i class="fa fa-inr"></i><b style="margin-left: 3px; font-size: 21px;">{{order.billAmount}}</b></tag>
                                                   <tag ng-if="order.orderStatus == 0 || order.orderStatus == 5">-</tag>
                                                  </td>
-                                                 <td style="text-align: center;">
-                                                  <tag ng-if="order.orderStatus > 0 && order.orderStatus != 5">
-                                                      <tag ng-if="order.paymentMode == 'Online'" style="padding: 2px 4px; color: #FFF; background: #27ae60">Online</tag>
+                                                 <td class="verticalCell" style="text-align: center;">
+                                                  <tag ng-if="order.orderStatus == '2'">
+                                                      <tag ng-if="order.paymentMode == 'Online'" style="padding: 2px 4px; color: #FFF; background: #27ae60; border-radius: 2px;">Online</tag>
                                                       <p ng-if="order.paymentMode == 'Online'" style="margin: 5px 0 0 0; text-align: center; color: #9e9e9e;">{{order.paymentReference}}</p>
-                                                      <tag ng-if="order.paymentMode == 'Offline'" style="padding: 2px 4px; color: #FFF; background: #7f8c8d">Offline</tag>
+                                                      <tag ng-if="order.paymentMode == 'Offline'" style="padding: 2px 4px; color: #7f8c8d; border: 1px solid #7f8c8d; border-radius: 2px;">Offline</tag>
                                                   </tag>
                                                   <tag ng-if="order.orderStatus == 0 || order.orderStatus == 5">-</tag>
                                                  </td>
-                                                 <td>
-                                                   <tag style="color: #e67e22; font-weight: bold" ng-if="order.orderStatus == 0">{{getRunningStatusText(order.orderData)}}</tag>
-                                                   <tag style="color: #3498db; font-weight: bold" ng-if="order.orderStatus == 1">Billed</tag>
-                                                   <tag style="color: #16a085; font-weight: bold" ng-if="order.orderStatus == 2">Paid</tag>
-                                                   <tag style="color: #e74c3c; font-weight: bold" ng-if="order.orderStatus == 5">Cancelled</tag>
+                                                 <td class="verticalCell">
+                                                   <tag style="font-weight: bold" ng-style="getRunningStatusTextStyle(order.orderData)" ng-if="order.orderStatus == 0">{{getRunningStatusText(order.orderData)}}</tag>
+                                                   <tag style="color: #ff9800; font-weight: bold" ng-if="order.orderStatus == 1">Billed</tag>
+                                                   <tag style="color: #FFF; font-weight: bold; background: #15a084; padding: 1px 4px; display: inline-block; border-radius: 2px;" ng-if="order.orderStatus == 2">
+                                                    <i class="fa fa-check-square" aria-hidden="true"></i><span style="margin-left: 5px">Completed</span>
+                                                   </tag>
                                                  </td>
                                               </tr>
                                             </tbody>
@@ -287,8 +291,8 @@
 
 			                     <!-- Displaying ORDER -->
                            <div class="row" ng-if="isViewingOrder">
-                              <div class="col-md-1"></div>
-                              <div class="col-md-10">
+                              <div class="col-md-2"></div>
+                              <div class="col-md-8">
                                 <div class="panel panel-bluegray">
                                    <div class="panel-heading" style="background: #D7DBDD">
                                       <h2 style="color: #5D6D7E; font-size: 21px;">
@@ -301,10 +305,8 @@
                                           </tag>
                                       </h2>
 
-                                      <tag style="float: right">
-                                        <h2 style="margin-top: 12px; float: right; padding: 1px 6px; background: #c0392b; color: #FFF" ng-click="cancelDisplay()">
-                                          X
-                                        </h2>
+                                      <tag class="customModalClose" ng-click="cancelDisplay()" style="float: right; top: 9px; position: absolute; right: 10px;">
+                                        <i class="fa fa-times"></i>
                                       </tag>
                                    </div>
                                    <div class="panel-heading" style="background: #F1F2F2">
@@ -331,23 +333,24 @@
                                    <div class="panel-body" ng-if="displayOrderID">
                                       
                                       <div class="row">
-                                         <div class="col-md-8">
+                                         <div class="col-md-1"></div>
+                                         <div class="col-md-10">
                                               <div id="earnings" class="mt-sm mb-sm" style="margin: 0 !important">
                                                  <!-- Order Data -->
                                                  <div class="table-responsive">
-                                                    <table class="table">
+                                                    <table class="table" style="border-bottom: 10px solid #375665">
                                                        <col width="20%">
                                                        <col width="10%">
                                                        <col width="70%">
                                                        <thead>
-                                                          <tr style="background: #3f51b5; color: #FFF;">
+                                                          <tr style="background: #375665; color: #FFF;">
                                                              <th>Sl No.</th>
                                                              <th>Quantity</th>
                                                              <th>Item Name</th>
                                                           </tr>
                                                        </thead>
                                                         <tbody ng-repeat="splitOrder in displayOrderContent.orderData track by $index">
-                                                          <tr style="background: #3f51b5; height: 20px !important; padding: 0; text-align: center; color: #FFF;">
+                                                          <tr style="height: 20px !important; padding: 0; text-align: center; color: #FFF;">
                                                               <td colspan="3" class="viewSmartOrderCol" ng-class="getSplitOrderStatusHeader(splitOrder)">{{getSubOrderHeading($index + 1, splitOrder)}}
                                                                 <tag ng-if="splitOrder.comments != ''" ng-click="openSplitOrderComments(splitOrder.comments)" style="width: 40px; display: inline-block; text-align: center; cursor: pointer;"><i class="fa fa-commenting-o"></i></tag>
                                                                 <tag style="float: right; margin-right: 15px">#{{splitOrder.subOrderId}}
@@ -369,8 +372,12 @@
                                                  </div>
                                               </div>
                                          </div>
+                                      
+                                      </div>
                                          
-                                         <div class="col-md-4" ng-if="isViewingSplitOrderCommentsText">
+                                      <div class="row" ng-if="isViewingSplitOrderCommentsText">
+                                          <div class="col-md-3"></div>
+                                         <div class="col-md-6">
                                             <div class="alert" style="background: none; border: 1px solid #3498db; color: #3498db; padding: 10px; min-height: 150px;">
                                                <h3 style="color: #3498db; font-weight: 200; font-size: 14px; margin: 0">Comments from Guest</h3>
                                                <hr style="margin: 5px 0 10px 0">

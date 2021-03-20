@@ -11,13 +11,13 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
 
 
       //Check if logged in
-      if($cookies.get("acceleronLunaAdminToken")){
-        $scope.isLoggedIn = true;
-      }
-      else{
-        $scope.isLoggedIn = false;
-        window.location = "adminlogin.html";
-      }
+      // if($cookies.get("acceleronLunaAdminToken")){
+      //   $scope.isLoggedIn = true;
+      // }
+      // else{
+      //   $scope.isLoggedIn = false;
+      //   window.location = "adminlogin.html";
+      // }
 
 
       /* Loading Animation */
@@ -28,24 +28,8 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
           x.style.background = color && color != '' ? color : '#ff9607';
           x.innerHTML = message ? '<tag id="infotext">'+message+'</tag>' : '<tag id="infotext">Loading...</tag>';
           x.className = "show"; 
-          x.classList.add('blink_me');
-      }
-      function updateToastAndClose(message, color){
-          clearInterval(toastShowingInterval);
-          var x = document.getElementById("infobar");
-          x.style.background = color;
-          x.innerHTML = message ? message : 'Completing...';
-          x.classList.remove('blink_me');
           toastShowingInterval = setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
       }
-      function hideToast(){
-        clearInterval(toastShowingInterval);
-        var x = document.getElementById("infobar");
-        toastShowingInterval = setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-      }
-
-
-
 
 
 
@@ -155,22 +139,16 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
                 });
             }
             else{
-                  var hasActiveRequest = table.activeServiceRequest != "" ? true : false;
-                  if(hasActiveRequest){ //There is active service request on the table --> Acknowledge
-
-                  }
-                  else{
-                        if(tableOrderStatus == 0){ //show VIEW ITEMS / GENERATE BILL options
-                          $scope.showOptions(['VIEW_ORDERS', 'GENERATE_BILL']);
-                          //$('#generateBillModal').modal('show');
-                        }
-                        else if(tableOrderStatus == 1){ //already billed - waiting for settlement (orange tile) - show VIEW ITEMS / SETTLE BILL options
-                          $scope.showOptions(['SETTLE_BILL', 'VIEW_ORDERS']);
-                        }
-                        else if(tableOrderStatus == 2){ //bill paid - show Confirm and clear mapping (remove table - qr mapping) 
-                          $scope.showOptions(['CONFIRM_PAYMENT']);
-                        }
-                  }
+                if(tableOrderStatus == 0){ //show VIEW ITEMS / GENERATE BILL options
+                  $scope.showOptions(['GENERATE_BILL', 'VIEW_ORDERS']);
+                  //$('#generateBillModal').modal('show');
+                }
+                else if(tableOrderStatus == 1){ //already billed - waiting for settlement (orange tile) - show VIEW ITEMS / SETTLE BILL options
+                  $scope.showOptions(['SETTLE_BILL', 'VIEW_ORDERS']);
+                }
+                else if(tableOrderStatus == 2){ //bill paid - show Confirm and clear mapping (remove table - qr mapping) 
+                  $scope.showOptions(['CONFIRM_PAYMENT']);
+                }
             }
         }
 
@@ -190,7 +168,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
 
 
       $scope.showOptions = function(optionsList){
-        
         $('#tableOptionsModal').modal('show');
         for(var i = 0; i < optionsList.length; i++){
 
@@ -209,10 +186,9 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
       }
 
       $scope.generateBillForTable = function(tableData){
-
               var data = {};
-              data.token = TOKEN_FOR_TESTING; //$cookies.get("acceleronLunaAdminToken");
-              data.masterorder = 59;
+              data.token = $cookies.get("acceleronLunaAdminToken");
+              data.masterorder = tableData.masterOrderId;
               data.systemBillNumber = tableData.systemBillNumber;
               data.totalBillAmount = tableData.billAmount;
               $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
@@ -226,9 +202,10 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
                  $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
                  if(response.data.status){
                    $('#generateBillModal').modal('hide');
+                   showToast("Successfully generated invoice", "#4caf50");
                  }
                  else{
-                   alert('Failed to generate bill - ' + response.data.error);
+                   showToast("Failed to generate bill - " + response.data.error, "#f44335");
                  }
               });
 
@@ -408,6 +385,56 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
         }
       }
 
+      $scope.getTableOrderCounter = function(tablesList, type){
+        let free = 0;
+        let news = 0;
+        let punched = 0;
+        let billed = 0;
+
+        var i = 0;
+        while(i < tablesList.length){
+          let table = tablesList[i];
+          if(table.isTableFree){
+            free++;
+          }
+          else{
+              switch(table.orderStatus){
+                case "0":{
+                  if(!table.hasNewOrder){
+                    punched++;
+                  } else {
+                    news++;
+                  }
+                  break;
+                }
+                case "1":{
+                  billed++;
+                  break;
+                }
+              }
+          }
+          i++;
+        }
+
+
+        switch(type){
+          case "NEW":{
+            return news;
+          }
+          case "PUNCHED":{
+            return punched;
+          }
+          case "BILLED":{
+            return billed;
+          }
+          case "FREE":{
+            return free;
+          }
+        }
+
+      }
+
+
       $scope.getTileClasses = function(table){
 
         let tileColor = "free";
@@ -447,12 +474,11 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
       }
 
       $scope.getTileText = function(table){
-
-        if(table.hasNewOrder){
+        if(table.orderStatus != 2 && table.hasNewOrder){
           return "New";
         }
 
-        if(table.isTableFree){
+        if(table.orderStatus != 2 && table.isTableFree){
           return "Free";
         }
 
@@ -861,8 +887,7 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
       data.status = 0;
       data.key = today;
       
-
-      $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+      $scope.isOrderSummaryLoaded = false;
       $http({
         method  : 'POST',
         url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-fetchordersummary.php',
@@ -870,11 +895,11 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
         headers : {'Content-Type': 'application/x-www-form-urlencoded'}
        })
        .then(function(response) {
-	       $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+	       $scope.isOrderSummaryLoaded = true;
          if(response.data.status){
            $scope.isMoreLeft = false; //Showing all orders anyways.
            $scope.isOrdersFound = true;
-           $scope.completed_orders = response.data.response;
+           $scope.completed_orders = sortByNewOrders(response.data.response);
          }
          else{
            $scope.isOrdersFound = false;
@@ -990,7 +1015,7 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
         if(splitOrder.status == 0){
           return "greenSplitHeader";
         } else if(splitOrder.status == 1){
-          return "";
+          return "acceptedSplitHeader";
         } else if(splitOrder.status == 5){
           return "redSplitHeader";
         }
@@ -1036,31 +1061,88 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
         var i = 0;
         while(i < orderData.length){
           if(orderData[i].status != 0){
-            return "Running"
+            return "Running Order"
           }
           i++
         }
-        return "Pending"
+        return "New Order"
       }
 
-      $scope.getRunningStatusTableBadge = function(order){
-        if(order.orderStatus == 2){ //Paid
-          return "greyTableBadge";
-        } else if(order.orderStatus == 1){ //Billed
-          return "blueTableBadge";
-        } else if(order.orderStatus == 0){ //Pending
+      $scope.getRunningStatusTextStyle = function(orderData){
+        var i = 0;
+        while(i < orderData.length){
+          if(orderData[i].status != 0){
+            return {
+              "color": "#f44336"
+            }
+          }
+          i++
+        }
+        return {
+          "color": "#16a085"
+        }
+      }
+
+      function sortByNewOrders(orderData){
+        orderData.sort(function(obj1, obj2) {
+          return obj1.table - obj2.table;
+        });
+
+        for(let i = 0; i < orderData.length; i++){ //Showing: New > Running > Billed > Completed
+          if(orderData[i].orderStatus == 2){
+            orderData[i].sortIndex = 500;
+          } else if(orderData[i].orderStatus == 1){
+            orderData[i].sortIndex = 400;
+          } else {
+            orderData[i].sortIndex = hasNewOrder(orderData[i]) ? 100 : 300;
+          }
+        }
+        orderData.sort(function(obj1, obj2) {
+          return obj1.sortIndex - obj2.sortIndex;
+        });
+
+        return orderData;
+      }
+
+      function hasNewOrder(order){
+        if(order.orderStatus == 0){
           var i = 0;
           let orderData = order.orderData;
           while(i < orderData.length){
-            if(orderData[i].status != 0){
-              return "orangeTableBadge"; //Some pending
+            if(orderData[i].status == 0){
+              return true;
             }
             i++
           }
-          return "greenTableBadge"; // All pending
-        } else if(order.orderStatus == 5){ //Rejected
-          return "redTableBadge";
         }
+        return false;
+      }
+
+      $scope.getRunningStatusTableBadge = function(order){
+        if(order.orderStatus == 2){ //Completed
+          return "completedTableBadge";
+        } else if(order.orderStatus == 1){ //Billed
+          return "orangeTableBadge";
+        } else if(order.orderStatus == 0){ //Active
+          var i = 0;
+          let orderData = order.orderData;
+          while(i < orderData.length){
+            if(orderData[i].status == 0){
+              return "greenTableBadge"; //Some pending
+            }
+            i++
+          }
+          return "redTableBadge"; // Some pending
+        } else if(order.orderStatus == 5){ //Rejected
+          return "rejectedTableBadge";
+        }
+      }
+
+      $scope.isCaptainDetailsFound = function(order){
+        if(order.stewardName == '' && order.stewardCode == ''){
+          return false;
+        }
+        return true;
       }
 
       $scope.cancelDisplay = function(){
@@ -1600,22 +1682,8 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
           x.style.background = color && color != '' ? color : '#ff9607';
           x.innerHTML = message ? '<tag id="infotext">'+message+'</tag>' : '<tag id="infotext">Loading...</tag>';
           x.className = "show"; 
-          x.classList.add('blink_me');
-      }
-      function updateToastAndClose(message, color){
-          clearInterval(toastShowingInterval);
-          var x = document.getElementById("infobar");
-          x.style.background = color;
-          x.innerHTML = message ? message : 'Completing...';
-          x.classList.remove('blink_me');
           toastShowingInterval = setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
       }
-      function hideToast(){
-        clearInterval(toastShowingInterval);
-        var x = document.getElementById("infobar");
-        toastShowingInterval = setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-      }
-
 
       $scope.qrConfigData = [];
       $scope.isQrConfigFound = false;

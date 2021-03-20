@@ -118,8 +118,27 @@
                         <div data-widget-group="group1">
 
                           <div class="row tablesSection">
-                             <h1>Tables</h1>
-
+                             <h1 class="smartOrderTableHeader">
+                              <tag style="font-size: 30px; font-weight: 300;">Table Status</tag>
+                              <span class="smartOrderSymbols">
+                                <span class="outer" style="background:#c7c7c7">
+                                  <circle class="circle" style="background:#ababab">{{getTableOrderCounter(tablesList, 'FREE')}}</circle>
+                                  <tag class="name">Free</tag>
+                                </span>
+                                <span class="outer" style="background:#049688">
+                                  <circle class="circle" style="background:#018679">{{getTableOrderCounter(tablesList, 'NEW')}}</circle>
+                                  <tag class="name">New</tag>
+                                </span>
+                                <span class="outer" style="background:#f44335">
+                                  <circle class="circle" style="background:#de3628">{{getTableOrderCounter(tablesList, 'PUNCHED')}}</circle>
+                                  <tag class="name">Punched</tag>
+                                </span>
+                                <span class="outer" style="background:#ff9800">
+                                  <circle class="circle" style="background:#e48800">{{getTableOrderCounter(tablesList, 'BILLED')}}</circle>
+                                  <tag class="name">Billed</tag>
+                                </span>
+                              </span>
+                            </h1>
                              <div class="tableTile" ng-class="getTileClasses(table)" ng-repeat="table in tablesList track by $index" ng-click="openTable(table)">
                                <span class="serviceWarningContent">
                                   <span class="bell"><i class="fa fa-bell"></i></span>

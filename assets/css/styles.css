@@ -1,3 +1,52 @@
+.customModalClose{
+    background: #c0392b;
+    color: #FFF;
+    cursor: pointer;
+    width: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 50%;  
+    display: inline-block;
+}
+
+.smartOrderTableHeader{
+    text-align: left;
+    padding: 15px 12px 15px 12px;
+    margin: 15px 20px 15px 15px;
+    background: #3e546b;
+    color: #FFF;
+    border-radius: 5px;
+}
+
+.smartOrderSymbols .outer{
+    margin-right: 3px;
+    border-radius: 3px;
+    position: relative;
+    display: inline-block;
+    padding: 4px 12px 4px 8px;
+}
+}
+
+.smartOrderSymbols .name{
+    display: inline-flex;
+}
+
+.smartOrderSymbols .circle{
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    color: #FFF;
+    font-size: 16px;
+    line-height: 30px;
+    font-weight: bold;
+}
+
+.smartOrderSymbols{
+  float: right;
+}
+
 .chooseCaptainButton{
     display: block;
     background: #FFF;
@@ -43,6 +92,11 @@
 .smartOrderSettings .currentRow:hover .tableBowl{
     background: #2196f3;
     color: #FFF;
+}
+
+.verticalCell {
+    vertical-align: middle !important;
+    display: table-cell !important;
 }
 
 .smartOrderSettings .cell {
@@ -193,8 +247,26 @@
     font-weight: bold;
 }
 
-.greyTableBadge{
-  border: 2px solid green;
+.completedTableBadge{
+  background: none;
+  color: #444;
+  position: relative;
+}
+
+.completedTableBadge:hover{
+  background: none;
+  color: #444;
+}
+
+.completedTickMark{
+  visibility: hidden;
+  position: absolute;
+  color: #4caf50;
+  top: -10px;
+  font-size: 70%;
+}
+.completedTableBadge .completedTickMark{
+  visibility: unset;
 }
 
 .blueTableBadge, .blueTableBadge:hover{
@@ -210,11 +282,15 @@
 }
 
 .redTableBadge, .redTableBadge:hover{
-  background: #e42f21;
+  background: #f44336;
 }
 
 .greenSplitHeader{
   background: #16a085;
+}
+
+.acceptedSplitHeader{
+  background: #a4a4a7;
 }
 
 .redSplitHeader{
@@ -595,7 +671,7 @@
 }
 
 .tableTile.active{
-  background: #ff9800 !important;
+  background: #f44336 !important;
 }
 
 .tableTile.free{
@@ -607,7 +683,7 @@
 }
 
 .tableTile.billed{
-  background: #f39c12 !important;
+  background: #ff9800 !important;
 }
 
 .tableTile.settled{
