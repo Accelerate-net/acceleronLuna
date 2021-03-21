@@ -139,7 +139,8 @@
                                 </span>
                               </span>
                             </h1>
-                             <div class="tableTile" ng-class="getTileClasses(table)" ng-repeat="table in tablesList track by $index" ng-click="openTable(table)">
+                            <p class="loadingTextAnimated" ng-if="!isTablesLoaded">LOADING</p>
+                             <div ng-if="isTablesLoaded" class="tableTile" ng-class="getTileClasses(table)" ng-repeat="table in tablesList track by $index" ng-click="openTable(table)">
                                <span class="serviceWarningContent">
                                   <span class="bell"><i class="fa fa-bell"></i></span>
                                   <tag class="animate">
@@ -179,8 +180,8 @@
                   </div>   
                   <div class="orderTimeBlock">
                     <span class="orderTime">{{getOrderTime(individualOrder.orderDate, 'PAST')}}</span> 
-                    <span class="orderLabel" ng-if="currentTableData.previousPunchedCount == 0">NEW ORDER</span> 
-                    <span class="orderLabel runningOrder" ng-if="currentTableData.previousPunchedCount != 0">{{getOrderCount(currentTableData.previousPunchedCount)}} RUNNING ORDER</span> 
+                    <span class="orderLabel" ng-if="currentTableData.previousPunchedCount == 0">New Order</span> 
+                    <span class="orderLabel runningOrder" ng-if="currentTableData.previousPunchedCount != 0">{{getOrderCount(currentTableData.previousPunchedCount)}} Running Order</span> 
                   </div>   
                 </div>
 
@@ -219,7 +220,7 @@
                       </div>
                 </div>                                          
                 <div class="modal-footer punchOrderFooter">                                    
-                  <button type="button" class="btn btn-default punchOrderReject" style="background: #f44336 !important; color: #FFF;" ng-click="punchOrderReject(currentTableData, individualOrder)">Reject</button>
+                  <button type="button" class="btn btn-default punchOrderReject" style="background: #f44336 !important; color: #FFF; width: 30% !important" ng-click="punchOrderReject(currentTableData, individualOrder)">Reject</button>
                   <button type="button" class="btn btn-success punchOrderAccept" style="background: #4caf4f !important;" ng-click="punchOrderAccept(currentTableData, individualOrder)">Accept Order</button>
                 </div>
               </div><!-- /.modal-content -->
@@ -243,12 +244,23 @@
 
          
          <!-- Options on Table Modal -->
-          <div class="modal fade" id="tableOptionsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal fade" id="generateInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content"> 
+                
+                <div class="modal-header" style="height: 65px; padding: 15px 10px; background: #f0f4f5">    
+                  <div class="orderTableBlock">
+                    <h1 class="tableTitle">Table <tag class="tableNumber">{{tableOptionsModalContent.table}}</tag></h1>
+                    <div class="stewardDetails"> 
+                      <span class="stewardName">{{tableOptionsModalContent.stewardName}}</span> 
+                      <i class="fa fa-circle" style="font-size: 5px; position: relative; bottom: 3px; color: #c3c3c3;"></i> 
+                      <span class="timeStamp"><tag style="font-weight: 300;">last updated at </tag>{{getOrderTime(tableOptionsModalContent.orderDate, 'ABSOLUTE')}}</span>
+                      <i class="fa fa-circle" style="font-size: 5px; position: relative; bottom: 3px; color: #c3c3c3; margin: 0 3px 0 5px;"></i><span class="timeStamp">#{{tableOptionsModalContent.masterOrderId}}</span>
+                    </div>
+                  </div> 
+                </div>
+
                 <div class="modal-body" style="padding-bottom: 50px"> 
-                  <h1>Table <b>#1</b><span>Bena</span></h1>
-                  <hr>
                   <div class="row" style="margin-top: 15px;">
                     <div class="col-sm-6">
                       <label class="myReservationLabel">System Bill Number</label>
@@ -261,41 +273,51 @@
                   </div> 
                 </div>             
                 <div class="modal-footer punchOrderFooter">      
-                  <button type="button" class="btn btn-default punchOrderReject" data-dismiss="modal">Hide</button>
-                  <button type="button" class="btn btn-success punchOrderAccept" ng-click="generateBillForTable(currentTableData)">Generate Bill</button>
+                  <button type="button" class="btn btn-default punchOrderHide" data-dismiss="modal">Hide</button>
+                  <button type="button" class="btn btn-default punchOrderReject" style="background: #f44336 !important; color: #FFF;" ng-click="rejectMasterOrderForTable(currentTableData)">Reject</button>
+                  <button type="button" class="btn btn-success punchOrderAccept" style="background: #4caf4f !important" ng-click="generateBillForTable(currentTableData)">Generate Bill</button>
                 </div>
               </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
           </div><!-- /.modal -->    
 
 
-
-          <!-- Generate Bill Modal -->
-          <div class="modal fade" id="generateBillModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+         
+         <!-- Options on Table Modal -->
+          <div class="modal fade" id="settleInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content"> 
-                <div class="modal-body" style="padding-bottom: 50px"> 
-                  <h1>Billing options on table <b>#1</b></h1>
-                  <hr>
-                  <div class="row" style="margin-top: 15px;">
-                    <div class="col-sm-6">
-                      <label class="myReservationLabel">System Bill Number</label>
-                       <input type="text" ng-model="currentTableData.systemBillNumber" class="form-control input-lg" style="height: 60px; font-size: 24px;" placeholder="Bill Number">
+                
+                <div class="modal-header" style="height: 65px; padding: 15px 10px; background: #f0f4f5">    
+                  <div class="orderTableBlock">
+                    <h1 class="tableTitle">Table <tag class="tableNumber">{{tableOptionsModalContent.table}}</tag></h1>
+                    <div class="stewardDetails"> 
+                      <span class="stewardName">{{tableOptionsModalContent.stewardName}}</span> 
+                      <i class="fa fa-circle" style="font-size: 5px; position: relative; bottom: 3px; color: #c3c3c3;"></i> 
+                      <span class="timeStamp"><tag style="font-weight: 300;">last updated at </tag>{{getOrderTime(tableOptionsModalContent.orderDate, 'ABSOLUTE')}}</span>
+                      <i class="fa fa-circle" style="font-size: 5px; position: relative; bottom: 3px; color: #c3c3c3; margin: 0 3px 0 5px;"></i><span class="timeStamp">#{{tableOptionsModalContent.masterOrderId}}</span>
                     </div>
-                    <div class="col-sm-6">
-                      <label class="myReservationLabel">Payable Amount</label>
-                      <input type="text" ng-model="currentTableData.billAmount" class="form-control input-lg" style="height: 60px; font-size: 24px;" placeholder="Amount">
+                  </div> 
+                </div>
+
+                <div class="modal-body" style="padding-bottom: 50px"> 
+                  <div class="row" style="margin-top: 15px;">
+                    <div class="col-sm-12">
+                      <p style="margin: 0; padding: 20px; font-size: 21px; font-weight: 300;">Customer has <b style="text-decoration: underline; color: red;">not paid</b> the invoice amount via Online yet.<br>Did you receive the invoice amount of <b style="font-size: 24px;"><i class="fa fa-inr" style="font-size: 70%; margin-left: 5px"></i>{{tableOptionsModalContent.billAmount}}</b> as Cash or Card?</p>
+
+                      <p class="guestDetailsBottom"><tag class="me">Guest</tag> <b>{{tableOptionsModalContent.guestName}}</b><i class="fa fa-circle"></i>{{tableOptionsModalContent.guestMobile}}</p>
                     </div>
                   </div> 
                 </div>             
                 <div class="modal-footer punchOrderFooter">      
-                  <button type="button" class="btn btn-default punchOrderReject" data-dismiss="modal">Hide</button>
-                  <button type="button" class="btn btn-success punchOrderAccept" ng-click="generateBillForTable(currentTableData)">Generate Bill</button>
+                  <button type="button" class="btn btn-default punchOrderHide" style="width: 20% !important" data-dismiss="modal">Hide</button>
+                  <button type="button" class="btn btn-success punchOrderAccept" style="background: #4caf4f !important; width: 80% !important" ng-click="settleBillForTable(currentTableData)">Mark as <b>Offline Payment</b> <i class="fa fa-check-circle"></i></button>
                 </div>
               </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
           </div><!-- /.modal -->    
-          
+
+
 
           <div id="infobar"></div>
 

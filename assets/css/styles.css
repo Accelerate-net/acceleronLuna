@@ -1,3 +1,56 @@
+@-webkit-keyframes flash {
+  from,
+  50%,
+  to {
+    opacity: 1;
+  }
+
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+@keyframes flash {
+  from,
+  50%,
+  to {
+    opacity: 1;
+  }
+
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+.loadingTextAnimated {
+  margin: 50px 0;
+  -webkit-animation: flash 1s infinite;
+  animation: flash 1s infinite;
+  font-size: 21px;
+  color: #c7c7c7;
+  text-align: center;
+}
+
+
+.guestDetailsBottom{
+  padding: 0 20px;
+  margin: 0;
+  color: #607d8b;
+}
+
+.guestDetailsBottom .me{
+  color: #795548;
+  margin-right: 5px;
+  text-decoration: underline;
+}
+
+.guestDetailsBottom i{
+  margin: 0 10px;
+  font-size: 6px;
+  position: relative;
+  top: -2px;  
+}
+
 .customModalClose{
     background: #c0392b;
     color: #FFF;
@@ -269,6 +322,31 @@
   visibility: unset;
 }
 
+
+.rejectedTableBadge{
+  background: none;
+  color: #444;
+  position: relative;
+}
+
+.rejectedTableBadge:hover{
+  background: none;
+  color: #444;
+}
+
+.rejectedCrossMark{
+  visibility: hidden;
+  position: absolute;
+  color: #e74c3c;
+  top: -10px;
+  font-size: 70%;
+}
+
+.rejectedTableBadge .rejectedCrossMark{
+  visibility: unset;
+}
+
+
 .blueTableBadge, .blueTableBadge:hover{
   background: #3498db;
 }
@@ -383,6 +461,83 @@
     padding: 10px 0;
 }
 
+
+#generateInvoiceModal .tableNumber{
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#generateInvoiceModal .stewardName{
+    font-size: 14px;
+    font-weight: bold;
+    color: #2196f3;
+    margin: 0 5px 0 20px;
+}
+
+#generateInvoiceModal .timeStamp{
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+#generateInvoiceModal .orderTableBlock{
+    float: left;
+}
+
+#generateInvoiceModal .orderTimeBlock{
+    float: right;
+}
+
+#generateInvoiceModal .tableTitle{
+    background: #616161;
+    color: #FFF;
+    padding: 2px 10px;
+    border-radius: 2px;
+    float: left;
+    font-size: 21px;
+    margin: 0;
+    display: inline-block;
+}
+
+
+#settleInvoiceModal .tableNumber{
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#settleInvoiceModal .stewardName{
+    font-size: 14px;
+    font-weight: bold;
+    color: #2196f3;
+    margin: 0 5px 0 20px;
+}
+
+#settleInvoiceModal .timeStamp{
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+#settleInvoiceModal .orderTableBlock{
+    float: left;
+}
+
+#settleInvoiceModal .orderTimeBlock{
+    float: right;
+}
+
+#settleInvoiceModal .tableTitle{
+    background: #616161;
+    color: #FFF;
+    padding: 2px 10px;
+    border-radius: 2px;
+    float: left;
+    font-size: 21px;
+    margin: 0;
+    display: inline-block;
+}
+
+
 #punchOrderModal .tableNumber{
     font-size: 28px;
     font-weight: bold;
@@ -453,19 +608,29 @@
 .punchOrderAccept{
     border: 0 !important;
     border-radius: 0 !important;
-    width: 80% !important;
+    width: 70% !important;
+    margin: 0 !important;
+    height: 60px !important;
+}
+
+.punchOrderHide{
+    float: left !important;
+    width: 15% !important;
+    border: 0 !important;
+    border-radius: 0 !important;
     margin: 0 !important;
     height: 60px !important;
 }
 
 .punchOrderReject{
     float: left !important;
-    width: 20% !important;
+    width: 15% !important;
     border: 0 !important;
     border-radius: 0 !important;
     margin: 0 !important;
     height: 60px !important;
 }
+
 
 .punchOrderFooter{
   padding: 0 !important;

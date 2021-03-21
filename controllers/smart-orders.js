@@ -49,7 +49,7 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
       $scope.isTablesLoaded = false;
       $scope.loadTables = function(){
           var data = {};
-          data.token = TOKEN_FOR_TESTING;//$cookies.get("acceleronLunaAdminToken");
+          data.token = $cookies.get("acceleronLunaAdminToken");
           $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
           $http({
             method  : 'POST',
@@ -68,14 +68,23 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
              }
           });
       }
+      
       $scope.loadTables();
+
+
+
+      $scope.TimerOrders = $interval(function () {
+        $scope.loadTables();
+      }, 10000);
+
+
 
       $scope.individualOrder = {};
 
       $scope.acknowledgeServiceRequest = function(table){
         if(table.activeServiceRequest){
               var data = {};
-              data.token = TOKEN_FOR_TESTING;//$cookies.get("acceleronLunaAdminToken");
+              data.token = $cookies.get("acceleronLunaAdminToken");
               data.requestId = table.activeServiceRequestId;
               $http({
                 method  : 'POST',
@@ -139,15 +148,11 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
                 });
             }
             else{
-                if(tableOrderStatus == 0){ //show VIEW ITEMS / GENERATE BILL options
-                  $scope.showOptions(['GENERATE_BILL', 'VIEW_ORDERS']);
-                  //$('#generateBillModal').modal('show');
+                if(tableOrderStatus == 0){ //show GENERATE BILL options
+                  $scope.showOptions('GENERATE_BILL', table);
                 }
-                else if(tableOrderStatus == 1){ //already billed - waiting for settlement (orange tile) - show VIEW ITEMS / SETTLE BILL options
-                  $scope.showOptions(['SETTLE_BILL', 'VIEW_ORDERS']);
-                }
-                else if(tableOrderStatus == 2){ //bill paid - show Confirm and clear mapping (remove table - qr mapping) 
-                  $scope.showOptions(['CONFIRM_PAYMENT']);
+                else if(tableOrderStatus == 1){ //already billed - waiting for settlement (orange tile)
+                  $scope.showOptions('SETTLE_BILL', table);
                 }
             }
         }
@@ -166,11 +171,18 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
         }
       }
 
+      $scope.getFormattedTime = function(date){
+        return moment(date, "yyyy-mm-dd hh:mm:ss").format('hh:mm a');
+      }
 
-      $scope.showOptions = function(optionsList){
-        $('#tableOptionsModal').modal('show');
-        for(var i = 0; i < optionsList.length; i++){
-
+      $scope.showOptions = function(requestType, tableData){
+        $scope.tableOptionsModalContent = tableData;
+        console.log(tableData)
+        if(requestType == 'GENERATE_BILL'){
+          $('#generateInvoiceModal').modal('show');
+        }
+        else if(requestType == 'SETTLE_BILL'){
+          $('#settleInvoiceModal').modal('show');
         }
       }
 
@@ -194,23 +206,70 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
               $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
               $http({
                 method  : 'POST',
-                url     : 'https://accelerateengine.app/smart-menu/apis/generateinvoice.php',
+                url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-generateinvoice.php',
                 data    : data,
                 headers : {'Content-Type': 'application/x-www-form-urlencoded'}
               })
               .then(function(response) {
                  $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
                  if(response.data.status){
-                   $('#generateBillModal').modal('hide');
+                   $('#generateInvoiceModal').modal('hide');
                    showToast("Successfully generated invoice", "#4caf50");
+                   $scope.loadTables();
                  }
                  else{
                    showToast("Failed to generate bill - " + response.data.error, "#f44335");
                  }
               });
+      }
 
 
+      $scope.settleBillForTable = function(tableData){
+              var data = {};
+              data.token = $cookies.get("acceleronLunaAdminToken");
+              data.masterOrderId = tableData.masterOrderId;
+              $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+              $http({
+                method  : 'POST',
+                url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-settleoffline.php',
+                data    : data,
+                headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+              })
+              .then(function(response) {
+                 $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+                 if(response.data.status){
+                   $('#settleInvoiceModal').modal('hide');
+                   showToast("Settled invoice offline", "#4caf50");
+                   $scope.loadTables();
+                 }
+                 else{
+                   showToast("Failed to settle bill - " + response.data.error, "#f44335");
+                 }
+              });
+      }
 
+      $scope.rejectMasterOrderForTable = function(tableData){
+              var data = {};
+              data.token = $cookies.get("acceleronLunaAdminToken");
+              data.masterorder = tableData.masterOrderId;
+              $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+              $http({
+                method  : 'POST',
+                url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-rejectmasterorder.php',
+                data    : data,
+                headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+              })
+              .then(function(response) {
+                 $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+                 if(response.data.status){
+                   $('#generateInvoiceModal').modal('hide');
+                   showToast("The order has been rejected", "#4caf50");
+                   $scope.loadTables();
+                 }
+                 else{
+                   showToast("Failed to reject the order - " + response.data.error, "#f44335");
+                 }
+              });
       }
 
 
@@ -373,7 +432,31 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
       }
 
       $scope.punchOrderReject = function(currentTableData, individualOrder){
-        
+        var data = {
+            masterOrderId: currentTableData.masterOrderId,
+            subOrderId: individualOrder.orderId,
+            token: $cookies.get("acceleronLunaAdminToken")
+        }
+
+        $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+        $http({
+          method  : 'POST',
+          url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-rejectorder.php',
+          data    : data,
+          headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+        })
+        .then(function(response) {
+           $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+           if(response.data.status){
+             $('#punchOrderModal').modal('hide');
+             showToast("Order has been rejected", "#4caf50");
+             $scope.loadTables();
+           }
+           else{
+             showToast("Error - " + (response.data.error ? response.data.error : "Something went wrong"), "#f44335");
+           }
+        });
+
       }
 
       $scope.getOrderTime = function(time, format){
@@ -490,8 +573,8 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
             return "Running";
           }
           case "1":{
-            if(table.systemBillNumber && table.systemBillNumber != ""){
-              return "Billed #" + table.systemBillNumber;
+            if(table.billAmount && table.billAmount != ""){
+              return "Billed Rs." + table.billAmount;
             }
             return "Billed";
           }
@@ -947,7 +1030,7 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
         $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
         $http({
           method  : 'POST',
-          url     : 'https://accelerateengine.app/food-engine/apis/filterorders.php',
+          url     : 'https://accelerateengine.app/food-engine/apis/superadmin-fetchordersummary.php',
           data    : data,
           headers : {'Content-Type': 'application/x-www-form-urlencoded'}
          })
@@ -982,7 +1065,7 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
 
         $http({
           method  : 'POST',
-          url     : 'https://accelerateengine.app/food-engine/apis/filterorders.php',
+          url     : 'https://accelerateengine.app/food-engine/apis/superadmin-fetchordersummary.php',
           data    : data,
           headers : {'Content-Type': 'application/x-www-form-urlencoded'}
          })
@@ -1195,6 +1278,343 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
         }, 20000);
 
   })
+
+
+
+
+  .controller('rejectedSmartOrdersController', function($scope, $http, $interval, $cookies) {
+
+      /*
+      //Check if logged in
+      if($cookies.get("acceleronLunaAdminToken")){
+        $scope.isLoggedIn = true;
+      }
+      else{
+        $scope.isLoggedIn = false;
+        window.location = "adminlogin.html";
+      }
+
+      */
+
+      //Logout function
+      $scope.logoutNow = function(){
+        if($cookies.get("acceleronLunaAdminToken")){
+          $cookies.remove("acceleronLunaAdminToken");
+          window.location = "adminlogin.html";
+        }
+      }
+
+      $scope.outletCode = localStorage.getItem("branch");
+
+
+      //Outlet Open/Close status
+      $scope.isOutletClosed = false;
+      $http.get("https://accelerateengine.app/food-engine/apis/getoutletstatus.php?outlet="+localStorage.getItem("branchCode")).then(function(data) {
+          var temp = JSON.parse(data);
+          if(temp.status){
+            $scope.isOutletClosed = false;
+          }
+          else{
+            $scope.isOutletClosed = true;
+          }
+      });
+
+      //Search or Order View?
+      $scope.isViewingOrder = false;
+
+      //Type of Search
+      $scope.searchDate = false;
+      $scope.searchMobile = false;
+      $scope.searchOrder = false;
+      $scope.stewardCode = false;
+      $scope.tableNumber = false;
+
+      //Search Key
+      $scope.isSearched = false;
+      $scope.searchID = '';
+      $scope.isOrdersFound = false;
+      $scope.resultMessage = '';
+      $scope.filterTitle = 'Today\'s Rejected Smart Orders';
+      $scope.isMoreLeft = true;
+
+      //Default Results : Completed Orders of the Day
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth()+1;
+      var yyyy = today.getFullYear();
+      if(dd<10){ dd='0'+dd;}
+      if(mm<10){ mm='0'+mm;}
+      var today = yyyy+'-'+mm+'-'+dd;
+
+      var data = {};
+      data.token = $cookies.get("acceleronLunaAdminToken");
+      data.status = 0;
+      data.key = today;
+      
+      $scope.isOrderSummaryLoaded = false;
+      $http({
+        method  : 'POST',
+        url     : 'https://accelerateengine.app/smart-menu/apis/superadmin-fetchordersummary.php',
+        data    : data,
+        headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+       })
+       .then(function(response) {
+         $scope.isOrderSummaryLoaded = true;
+         if(response.data.status){
+           $scope.isMoreLeft = false; //Showing all orders anyways.
+           $scope.isOrdersFound = true;
+           $scope.completed_orders = sortByNewOrders(response.data.response);
+         }
+         else{
+           $scope.isOrdersFound = false;
+           $scope.resultMessage = "There are no rejected Smart Orders today!";
+         }
+        });
+
+      $scope.searchByDate = function(){    
+      $scope.searchID = "";
+      setTimeout(function(){
+        $('#mySearchBox').datetimepicker({  
+            format: "ddmmyyyy",
+            weekStart: 1,
+              todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+        }).on('changeDate', function(ev) {
+          $scope.searchID = $("#mySearchBox").val();
+          $scope.search();
+        }).on('hide', function(ev) { 
+          $('#mySearchBox').datetimepicker('remove');
+        });
+      
+        $("#mySearchBox").datetimepicker().focus();
+      
+      }, 200);       
+      }
+      
+
+
+      $scope.limiter = 0;
+
+      $scope.search = function() {
+        //Switch to list view in case not
+        $scope.isViewingOrder = false;
+
+
+        var data = {};
+        data.token = $cookies.get("acceleronLunaAdminToken");
+        data.key = $scope.searchID;
+        data.id = 5;
+        $('#vegaPanelBodyLoader').show(); $("body").css("cursor", "progress");
+        $http({
+          method  : 'POST',
+          url     : 'https://accelerateengine.app/food-engine/apis/superadmin-fetchordersummary.php',
+          data    : data,
+          headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+         })
+         .then(function(response) {
+           $('#vegaPanelBodyLoader').hide(); $("body").css("cursor", "default");
+           if(response.data.status){
+             $scope.isOrdersFound = true;
+             $scope.completed_orders = response.data.response;
+             $scope.filterTitle = response.data.result;
+
+             if($scope.completed_orders.length%5 == 0){
+                  $scope.isMoreLeft = true;
+             }else{
+                  $scope.isMoreLeft = false;
+             }
+           }
+           else{
+             $scope.isOrdersFound = false;
+             $scope.filterTitle = "No Results";
+             $scope.resultMessage = "There are no matching results.";
+           }
+          });
+      }
+
+      //Load More Orders
+      $scope.loadMore = function(){
+        $scope.limiter = $scope.limiter + 10;
+        var data = {};
+        data.token = $cookies.get("acceleronLunaAdminToken");
+        data.key = $scope.searchID;
+        data.id = $scope.limiter;
+
+        $http({
+          method  : 'POST',
+          url     : 'https://accelerateengine.app/food-engine/apis/superadmin-fetchordersummary.php',
+          data    : data,
+          headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+         })
+         .then(function(response) {
+           if(response.data.status){
+             $scope.isOrdersFound = true;
+             $scope.completed_orders = $scope.completed_orders.concat(response.data.response);
+             $scope.filterTitle = response.data.result;
+
+             if($scope.completed_orders.length%5 == 0){
+                  $scope.isMoreLeft = true;
+             }else{
+                  $scope.isMoreLeft = false;
+             }
+           }
+           else{
+             $scope.isOrdersFound = false;
+           }
+          });
+      }
+
+      //To display order details
+      $scope.displayOrder = function(order){
+        $scope.displayOrderID = order.masterOrderId;
+        $scope.displayOrderContent = order;
+        $scope.isViewingOrder = true;
+      }
+
+      $scope.getSplitOrderStatusHeader = function(splitOrder){
+        if(splitOrder.status == 0){
+          return "greenSplitHeader";
+        } else if(splitOrder.status == 1){
+          return "acceptedSplitHeader";
+        } else if(splitOrder.status == 5){
+          return "redSplitHeader";
+        }
+      }
+
+      $scope.getSubOrderHeading = function(rank, splitOrder){
+        let text = "";
+        if(splitOrder.status == 0){
+          text = "- Pending";
+        } else if(splitOrder.status == 1){
+          text = "- Accepeted";
+        } else if(splitOrder.status == 5){
+          text = "- Rejected";
+        }
+
+
+        if(rank == 1){
+          return "First Order " + text;
+        } else if(rank == 2){
+          return "Second Order " + text;
+        } else if(rank == 3){
+          return "Third Order " + text;
+        } else if(rank >= 4){
+          return rank + "th Order " + text;
+        }
+      }
+
+      $scope.getFormattedTime = function(date){
+        return moment(date, "yyyy-mm-dd hh:mm:ss").format('hh:mm a');
+      }
+
+      $scope.isViewingSplitOrderCommentsText = false;
+      $scope.viewingSplitOrderCommentsText = "";
+      $scope.openSplitOrderComments = function(text){
+        if(text == ""){
+          return;
+        }
+        $scope.isViewingSplitOrderCommentsText = true;
+        $scope.viewingSplitOrderCommentsText = text;
+      }
+
+      function sortByNewOrders(orderData){
+        orderData.sort(function(obj1, obj2) {
+          return obj1.table - obj2.table;
+        });
+
+        for(let i = 0; i < orderData.length; i++){ //Showing: New > Running > Billed > Completed
+          if(orderData[i].orderStatus == 2){
+            orderData[i].sortIndex = 500;
+          } else if(orderData[i].orderStatus == 1){
+            orderData[i].sortIndex = 400;
+          } else {
+            orderData[i].sortIndex = hasNewOrder(orderData[i]) ? 100 : 300;
+          }
+        }
+        orderData.sort(function(obj1, obj2) {
+          return obj1.sortIndex - obj2.sortIndex;
+        });
+
+        return orderData;
+      }
+
+      function hasNewOrder(order){
+        if(order.orderStatus == 0){
+          var i = 0;
+          let orderData = order.orderData;
+          while(i < orderData.length){
+            if(orderData[i].status == 0){
+              return true;
+            }
+            i++
+          }
+        }
+        return false;
+      }
+
+      $scope.isCaptainDetailsFound = function(order){
+        if(order.stewardName == '' && order.stewardCode == ''){
+          return false;
+        }
+        return true;
+      }
+
+      $scope.cancelDisplay = function(){
+        $scope.isViewingOrder = false;
+      }
+
+       //Refresh Badge Counts
+        var admin_data = {};
+        admin_data.token = $cookies.get("acceleronLunaAdminToken");
+        $http({
+          method  : 'POST',
+          url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',
+          data    : admin_data,
+          headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+         })
+         .then(function(response) {
+          if(response.data.status){
+                  $scope.reservations_length = response.data.reservationsCount;
+                  $scope.pending_orders_length = response.data.ordersCount;
+                  $scope.helprequests_length = response.data.helpCount;
+                  $scope.smart_orders_length = response.data.smartOrdersCount;
+                }
+                else{
+                  $scope.reservations_length = 0;
+                  $scope.pending_orders_length = 0;
+                  $scope.helprequests_length = 0;
+                }
+         });
+
+        $scope.Timer = $interval(function () {
+          $http({
+            method  : 'POST',
+            url     : 'https://accelerateengine.app/food-engine/apis/fetchbadgecounts.php',
+            data    : admin_data,
+            headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+           })
+           .then(function(response) {
+                if(response.data.status){
+                  $scope.reservations_length = response.data.reservationsCount;
+                  $scope.pending_orders_length = response.data.ordersCount;
+                  $scope.helprequests_length = response.data.helpCount;
+                  $scope.smart_orders_length = response.data.smartOrdersCount;
+                }
+                else{
+                  $scope.reservations_length = 0;
+                  $scope.pending_orders_length = 0;
+                  $scope.helprequests_length = 0;
+                }
+           });
+        }, 20000);
+
+  })
+
+
 
   .controller('ordersController', function($scope, $http, $interval, $cookies) {
   
