@@ -24,7 +24,7 @@ angular.module('SettingsApp', ['ngCookies'])
       }
     }
 
-    $scope.outletCode = localStorage.getItem("branch");
+      $scope.outletCode = localStorage.getItem("branch");
     
       $scope.admin = {};
       $scope.changePassFlag = false;
@@ -53,7 +53,12 @@ angular.module('SettingsApp', ['ngCookies'])
               $scope.isNotFound = true;
             }
         });
-        
+     
+     //Local server settings
+     $scope.localServerIP = localStorage.getItem("localServerIP") && localStorage.getItem("localServerIP") != "" ? localStorage.getItem("localServerIP") : "127.0.0.1";
+     $scope.updateLocalServerIP = function(){
+       localStorage.setItem("localServerIP", $scope.localServerIP);
+     }
      
      $scope.pass = {};
      $scope.pass.current = "";
@@ -210,7 +215,7 @@ angular.module('SettingsApp', ['ngCookies'])
      
               
 
-     //Refresh Badge Counts
+        //Refresh Badge Counts
         var admin_data = {};
         admin_data.token = $cookies.get("acceleronLunaAdminToken");
         $http({

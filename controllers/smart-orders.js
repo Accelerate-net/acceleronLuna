@@ -323,7 +323,8 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
 
 
       $scope.sendOrderToServer = function(currentTableData, individualOrder){
-                var COMMON_IP_ADDRESS = "http://127.0.0.1:5984/";
+                var localServerIP = localStorage.getItem("localServerIP") && localStorage.getItem("localServerIP") != "" ? localStorage.getItem("localServerIP") : "127.0.0.1";
+                var COMMON_IP_ADDRESS = "http://"+localServerIP+":5984/";
 
                 var table = currentTableData.table;
                 if(table == ''){  
