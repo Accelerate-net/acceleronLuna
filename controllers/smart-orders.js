@@ -143,7 +143,7 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
                      $('#punchOrderModal').modal('show');
                    }
                    else{
-                     alert('Failed to load the order - ' + response.data.error);
+                      showToast("Failed to load the order table - " + response.data.error, "#f44335");
                    }
                 });
             }
@@ -177,7 +177,6 @@ const TOKEN_FOR_TESTING = "sHtArttc2ht%2BtMf9baAeQ9ukHnXtlsHfexmCWx5sJOhHIq1S%2F
 
       $scope.showOptions = function(requestType, tableData){
         $scope.tableOptionsModalContent = tableData;
-        console.log(tableData)
         if(requestType == 'GENERATE_BILL'){
           $('#generateInvoiceModal').modal('show');
         }
