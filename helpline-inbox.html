@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
    <meta charset="utf-8">
+
    <title>Acceleron Luna</title>
    <link type='text/css' href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600' rel='stylesheet'>
    <link type="text/css" href="assets/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
@@ -24,84 +25,36 @@
    
    <!-- Google Sign In -->
 	<script>
-	  var GoogleAuth;
-	  var SCOPE = 'https://www.googleapis.com/auth/gmail.send';
-	  function handleClientLoad() {
-	    // Load the APIs client and auth2 modules.
-	    // Call the initClient function after the modules load.
-	    gapi.load('client:auth2', initClient);
-	  }
-	
-	  function initClient() {
-	    // Retrieve the discovery document for version 3 of Google Drive API.
-	    // In practice, your app can retrieve one or more discovery documents.
-	    var discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest';
-	
-	    // Initialize the gapi.client object, which app uses to make API requests.
-	    // Get API key and client ID from API Console.
-	    // 'scope' field specifies space-delimited list of access scopes.
-	    gapi.client.init({
-	        'apiKey': 'AIzaSyDo2E2eVcSDGTIDIPvTbRxMng_SaEOh2fI',
-	        'discoveryDocs': [discoveryUrl],
-	        'clientId': '445923166554-148c9hgaj5dh1k5kbak0id3lobv1qkam.apps.googleusercontent.com',
-	        'scope': SCOPE
-	    }).then(function () {
-	      GoogleAuth = gapi.auth2.getAuthInstance();
-	
-	      // Listen for sign-in state changes.
-	      GoogleAuth.isSignedIn.listen(updateSigninStatus);
-	
-	      // Handle initial sign-in state. (Determine if user is already signed in.)
-	      var user = GoogleAuth.currentUser.get();
-	      setSigninStatus();
-	
-	      // Call handleAuthClick function when user clicks on
-	      //      "Sign In/Authorize" button.
-	      $('#sign-in-or-out-button').click(function() {
-	        handleAuthClick();
-	      }); 
-	      $('#revoke-access-button').click(function() {
-	        revokeAccess();
-	      }); 
-	    });
-	  }
-	
-	  function handleAuthClick() {
-	    if (GoogleAuth.isSignedIn.get()) {
-	      // User is authorized and has clicked 'Sign out' button.
-	      GoogleAuth.signOut();
-	    } else {
-	      // User is not signed in. Start Google auth flow.
-	      GoogleAuth.signIn();
-	    }
-	  }
-	
-	  function revokeAccess() {
-	    GoogleAuth.disconnect();
-	  }
-	
-	  function setSigninStatus(isSignedIn) {
-	    var user = GoogleAuth.currentUser.get();
-	    var isAuthorized = user.hasGrantedScopes(SCOPE);
-	    if (isAuthorized) {
-	      $('#sign-in-or-out-button').html('Sign Out');
-	      $('#loginButton').css('visibility', 'hidden');
-              $('#displayPanel').css('visibility', 'visible');
-	    } else {
-	      $('#sign-in-or-out-button').html('Login to Gmail');
-              $('#loginButton').css('visibility', 'visible');
-              $('#displayPanel').css('visibility', 'hidden');
-	    }
-	  }
-	
-	  function updateSigninStatus(isSignedIn) {
-	    setSigninStatus();
-	  }
-	  	  	 	  
-	  
+
+// Function called when the Google Sign-In API successfully authenticates the user
+function manageLogin(googleUser) {
+  // Get the user's basic profile information
+  var profile = googleUser.getBasicProfile();
+  var userId = profile.getId();
+  var userName = profile.getName();
+  var userEmail = profile.getEmail();
+  var userAvatar = profile.getImageUrl();
+
+  // You can now use the user information as needed (e.g., send it to the server for authentication)
+
+  // Example: Display user information in the console
+  console.log('User ID: ' + userId);
+  console.log('User Name: ' + userName);
+  console.log('User Email: ' + userEmail);
+  console.log('User Avatar URL: ' + userAvatar);
+}
+
+// Function to handle sign-out
+function signOut() {
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function () {
+    console.log('User signed out.');
+  });
+}
+
+
 	</script>
-   
-	
+  
 
 </head>
 
@@ -202,14 +155,36 @@
 
                 
 			<div class="container-fluid">
-			
-			<div class="row" id="loginButton">
-				<div class="col-sm-2"></div>
-				<div class="col-sm-8">
-					<button class="btn btn-lg btn-green btn-block mb-xl" id="sign-in-or-out-button" target="new">Loading ...</button>
-				</div>
+
+
+			<div class="row">
+
+					<div class="col-sm-4"></div>
+
+
+					<!-- GOOGLE LOGIN -->
+					<div class="col-sm-4">
+						<div id="g_id_onload"
+						     data-client_id="445923166554-148c9hgaj5dh1k5kbak0id3lobv1qkam.apps.googleusercontent.com"
+						     data-context="signin"
+						     data-ux_mode="popup"
+						     data-callback="manageLogin()"
+						     data-auto_prompt="false">
+						</div>
+
+						<div class="g_id_signin"
+						     data-type="standard"
+						     data-shape="pill"
+						     data-theme="filled_black"
+						     data-text="signin_with"
+						     data-size="large"
+						     data-logo_alignment="left">
+						</div>
+					</div>
+					
 			</div>
-			                                 
+
+                     
 			<div class="row" id="displayPanel" style="visibility: hidden">								
 		
 				<div ng-if="!isQueriesFound">
@@ -679,16 +654,7 @@
       <script type="text/javascript" src="assets/demo/demo.js"></script>
 
 
-<!-- End loading site level scripts -->
-    
-
-      
-      <!-- Google Sign In -->
-      <script async defer src="https://apis.google.com/js/api.js" 
-        onload="this.onload=function(){};handleClientLoad()" 
-        onreadystatechange="if (this.readyState === 'complete') this.onload()">
-      </script>
-               
+      <script src="https://accounts.google.com/gsi/client" async></script>
 
    </body>
 </html>

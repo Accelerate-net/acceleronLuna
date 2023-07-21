@@ -28,7 +28,17 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
     $scope.outletCode = localStorage.getItem("branch");
     
     
-	       
+
+    $scope.googleUser;
+
+    function onSignIn(user) {
+      $scope.googleUser = user;
+      console.log(user);
+    }
+
+
+
+	  
 
     //Add unread class
     $scope.checkUnread = function(queryContent){
@@ -332,7 +342,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
 		return content.replace(new RegExp('\n','g'), '<br/>');
 	}
 
-        $scope.submitReply = function(){
+  $scope.submitReply = function(){
 		$scope.isReplyRequested = false;		
 		
 		var mydata = {};
@@ -365,36 +375,77 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
 	              	}
 	         });	         	         
 	        }
-	        
-	         		  //Send Mail
-	         		  var sendingText = mydata.replyText +'<hr>'+ $scope.trailContent
-				  var message = sendingText.replace(new RegExp('\n','g'), '<br/>');
-				  var headers_obj =  {
-				      'From': 'Zaitoon Care <care@zaitoon.online>',
-				      'To': mydata.replyEmail,
-				      'Subject': mydata.replySubject,
-				      'Content-Type': 'text/html; charset="UTF-8"',
-				      'Content-Transfer-Encoding': 'base64'
-				  };
-				    
-				  var email = '';
-				  
-				    for(var header in headers_obj)
-			    		email += header += ": "+headers_obj[header]+"\r\n"; 
-			    
-				  email += "\r\n" + message;
-				  var sendRequest = gapi.client.gmail.users.messages.send({
-				    'userId': 'me',
-				    'resource': {
-				      'raw': window.btoa(email).replace(/\+/g, '-').replace(/\//g, '_')
-				    }
-				  });
-				
-				  sendRequest.execute($scope.submitToServer());		        
+
+
+	  sendEmailToCustomer();
+    
+		// //Send Mail
+		// var sendingText = mydata.replyText +'<hr>'+ $scope.trailContent
+	  // var message = sendingText.replace(new RegExp('\n','g'), '<br/>');
+	  // var headers_obj =  {
+	  //     'From': 'Zaitoon Care <care@zaitoon.online>',
+	  //     'To': mydata.replyEmail,
+	  //     'Subject': mydata.replySubject,
+	  //     'Content-Type': 'text/html; charset="UTF-8"',
+	  //     'Content-Transfer-Encoding': 'base64'
+	  // };
+	    
+	  // var email = '';
+	  
+	  //   for(var header in headers_obj)
+    // 		email += header += ": "+headers_obj[header]+"\r\n"; 
+    
+	  // email += "\r\n" + message;
+	  // var sendRequest = gapi.client.gmail.users.messages.send({
+	  //   'userId': 'me',
+	  //   'resource': {
+	  //     'raw': window.btoa(email).replace(/\+/g, '-').replace(/\//g, '_')
+	  //   }
+	  // });
+	
+	  // sendRequest.execute($scope.submitToServer());		        
 	        
 	         
-        }
+	}
         
+       
+
+
+    function sendEmailToCustomer(content) {
+	    	console.log("content")
+	      var to = "abhijithcs1993@gmail.com";
+	      var subject = "Hello Abhijith";
+	      var message = "This is a test mail";
+
+	      // Use the access token from Google Sign-In to authorize Gmail API requests
+	      var accessToken = $scope.googleUser.getAuthResponse().access_token;
+
+	      // Send email using Gmail API
+	      gapi.client.load('gmail', 'v1', function() {
+	        var email = '';
+	        email += 'To: ' + to + '\r\n';
+	        email += 'Subject: ' + subject + '\r\n';
+	        email += '\r\n' + message;
+
+	        var request = gapi.client.gmail.users.messages.send({
+	          'userId': 'me',
+	          'resource': {
+	            'raw': window.btoa(email)
+	          }
+	        });
+
+	        request.execute(function(response) {
+	          console.log(response);
+	        });
+	      });
+	  }  
+
+
+
+
+
+
+
         //Filter Refunds / General queries
         $scope.shortlistQueries = function(type){
         	$scope.searchKey.value = type;
