@@ -8,7 +8,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
 
   .controller('helpdeskController', function($scope, $http, $interval, $cookies) {
 
-    //Check if logged in
+    Check if logged in
     if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
@@ -26,18 +26,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
     }
 
     $scope.outletCode = localStorage.getItem("branch");
-    
-    
-
-    $scope.googleUser;
-
-    function onSignIn(user) {
-      $scope.googleUser = user;
-      console.log(user);
-    }
-
-
-
+   
 	  
 
     //Add unread class
@@ -375,9 +364,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
 	              	}
 	         });	         	         
 	        }
-
-
-	  sendEmailToCustomer();
+	        
     
 		// //Send Mail
 		// var sendingText = mydata.replyText +'<hr>'+ $scope.trailContent

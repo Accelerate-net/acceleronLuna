@@ -22,39 +22,6 @@
    <script src="assets/js/angular-cookies.min.js"></script>
    <script src="assets/js/angular-sanitize.js"></script>      
    <script src="controllers/helpdesk.js"></script>
-   
-   <!-- Google Sign In -->
-	<script>
-
-// Function called when the Google Sign-In API successfully authenticates the user
-function manageLogin(googleUser) {
-  // Get the user's basic profile information
-  var profile = googleUser.getBasicProfile();
-  var userId = profile.getId();
-  var userName = profile.getName();
-  var userEmail = profile.getEmail();
-  var userAvatar = profile.getImageUrl();
-
-  // You can now use the user information as needed (e.g., send it to the server for authentication)
-
-  // Example: Display user information in the console
-  console.log('User ID: ' + userId);
-  console.log('User Name: ' + userName);
-  console.log('User Email: ' + userEmail);
-  console.log('User Avatar URL: ' + userAvatar);
-}
-
-// Function to handle sign-out
-function signOut() {
-  var auth2 = gapi.auth2.getAuthInstance();
-  auth2.signOut().then(function () {
-    console.log('User signed out.');
-  });
-}
-
-
-	</script>
-  
 
 </head>
 
@@ -155,37 +122,8 @@ function signOut() {
 
                 
 			<div class="container-fluid">
-
-
-			<div class="row">
-
-					<div class="col-sm-4"></div>
-
-
-					<!-- GOOGLE LOGIN -->
-					<div class="col-sm-4">
-						<div id="g_id_onload"
-						     data-client_id="445923166554-148c9hgaj5dh1k5kbak0id3lobv1qkam.apps.googleusercontent.com"
-						     data-context="signin"
-						     data-ux_mode="popup"
-						     data-callback="manageLogin()"
-						     data-auto_prompt="false">
-						</div>
-
-						<div class="g_id_signin"
-						     data-type="standard"
-						     data-shape="pill"
-						     data-theme="filled_black"
-						     data-text="signin_with"
-						     data-size="large"
-						     data-logo_alignment="left">
-						</div>
-					</div>
-					
-			</div>
-
                      
-			<div class="row" id="displayPanel" style="visibility: hidden">								
+			<div class="row" id="displayPanel">								
 		
 				<div ng-if="!isQueriesFound">
 					<p style="font-size: 24px; color: #bdc3c7; font-weight: 200; text-align: center; padding-top: 60px;">Your inbox is so empty. <i class="ti ti-face-sad"></i></p>
@@ -652,9 +590,6 @@ function signOut() {
       <script type="text/javascript" src="assets/plugins/nanoScroller/js/jquery.nanoscroller.min.js"></script> <!-- nano scroller -->
       <script type="text/javascript" src="assets/js/application.js"></script>
       <script type="text/javascript" src="assets/demo/demo.js"></script>
-
-
-      <script src="https://accounts.google.com/gsi/client" async></script>
 
    </body>
 </html>
