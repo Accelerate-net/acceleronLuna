@@ -8,7 +8,7 @@ angular.module('helpdeskApp', ['ngCookies', 'ngSanitize'])
 
   .controller('helpdeskController', function($scope, $http, $interval, $cookies) {
 
-    Check if logged in
+    // Check if logged in
     if($cookies.get("acceleronLunaAdminToken")){
       $scope.isLoggedIn = true;
     }
